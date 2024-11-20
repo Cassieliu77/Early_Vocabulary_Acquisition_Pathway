@@ -31,7 +31,7 @@ analysis_data_test <- testing(split)
 analysis_data_train <- analysis_data_train %>%
   mutate(
     prod_comp_mean = (production + comprehension) / 2,  # Average of production and comprehension
-    high_vocabulary = ifelse(prod_comp_mean > 200, 1, 0)  # Binary target variable
+    high_vocabulary = ifelse(prod_comp_mean > 350, 1, 0)  # Binary target variable
   ) %>%
   drop_na(prod_comp_mean)  # Drop rows where prod_comp_mean is NA
 
@@ -44,11 +44,15 @@ logistic_model <- glm(
   high_vocabulary ~ age_scaled + is_norming + lexical_category ,  # Model formula
   data = analysis_data_train,  # Training dataset
   family = binomial,  # Logistic regression
-  weights = ifelse(high_vocabulary == 1, 10, 1)  # Adjust weights for class imbalance
+  weights = ifelse(high_vocabulary == 1, 5, 1)  # Adjust weights for class imbalance
 )
 
 # Print the summary of the model
 summary(logistic_model)
+
+# Print the confusion matrix
+confusion_matrix <- table(Actual = analysis_data_train$high_vocabulary, Predicted = predicted_classes)
+print(confusion_matrix)
 
 #### Save model ####
 write_parquet(analysis_data_test, sink = "data/02-analysis_data/test_data.parquet")

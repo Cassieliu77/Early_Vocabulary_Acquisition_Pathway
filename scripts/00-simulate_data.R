@@ -62,7 +62,7 @@ categories <- c(
 category <- sample(categories, size = 10000, replace = TRUE)
 
 
-# Define a subset of uni_lemma values
+# Define a set of possible `uni_lemma` values
 uni_lemma_values <- c(
   "crocodile", "bee", "cat", "dog", "elephant", "fish (animal)", "frog",
   "giraffe", "hat", "pants", "shoe", "blanket", "bottle", "knife", 
@@ -73,6 +73,7 @@ uni_lemma_values <- c(
 
 # Simulate uni_lemma values
 uni_lemma <- sample(uni_lemma_values, size = 10000, replace = TRUE)
+
 
 
 # Simulating lexical_category (e.g., "other")
@@ -95,7 +96,7 @@ age <- sample(18:60, size = 10000, replace = TRUE)
 comprehension <- sample(100:800, size = 10000, replace = TRUE)
 
 # Simulating production (random values between 100 and 700)
-production <- sample(100:700, size = 10000, replace = TRUE)
+production <- pmin(comprehension, sample(100:700, size = 10000, replace = TRUE))  # Ensure production <= comprehension
 
 # Simulating is_norming (TRUE/FALSE values)
 is_norming <- sample(c(TRUE, FALSE), size = 10000, replace = TRUE)

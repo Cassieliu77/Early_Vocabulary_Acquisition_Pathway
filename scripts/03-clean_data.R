@@ -31,7 +31,7 @@ cleaned_data <- cleaned_data %>%
 
 # Filter data to include only rows with date_of_test after 2000-01-01
 cleaned_data <- cleaned_data %>%
-  filter(date_of_test > as.Date("2000-01-01"))
+  filter(date_of_test > as.Date("2000-01-01")) %>% filter(production > 0) %>% filter(comprehension > 0)
 
 # Omit rows with NA values
 cleaned_data <- cleaned_data %>% 
