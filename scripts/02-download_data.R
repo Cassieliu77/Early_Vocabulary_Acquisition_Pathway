@@ -1,10 +1,10 @@
 #### Preamble ####
-# Purpose: Downloads and saves the data from wordbankr package, retrieved from worbank website
+# Purpose: Downloads and saves the data from wordbankr package, retrieved from wordbank website
 # Author: Yongqi Liu
 # Date: 13 Nov 2024 
 # Contact: cassieliu.liu@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: Need
+# Pre-requisites: Need the website URL: https://wordbank.stanford.edu
 # Any other information needed? NA
 
 
