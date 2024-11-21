@@ -74,14 +74,11 @@ uni_lemma_values <- c(
 # Simulate uni_lemma values
 uni_lemma <- sample(uni_lemma_values, size = 10000, replace = TRUE)
 
-
-
-# Simulating lexical_category (e.g., "other")
-lexical_category <- sample(
+# Simulating broad_category (e.g., "other")
+broad_category <- sample(
   c("other", "noun", "verb", "adjective", "other"),
   size = 10000,
   replace = TRUE)
-
 
 # Simulating date_of_test (random dates within a range)
 date_of_test <- sample(
@@ -113,7 +110,7 @@ simulated_data <- tibble(
   item_kind = item_kind,
   category = category,
   uni_lemma = uni_lemma,
-  lexical_category = lexical_category,
+  broad_category = broad_category,
   date_of_test = date_of_test,
   age = age,
   comprehension = comprehension,

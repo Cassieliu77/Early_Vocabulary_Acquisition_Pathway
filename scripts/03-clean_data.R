@@ -21,7 +21,7 @@ raw_data <- read_parquet("data/01-raw_data/raw_data.parquet")
 
 # Select the needed columns
 cleaned_data <- raw_data %>% select(data_id, item_id, language, form, item_kind, 
-                                 category, uni_lemma, lexical_category, date_of_test,
+                                 category, uni_lemma, date_of_test,
                                  age, comprehension, production, 
                                  is_norming, child_id)
 
@@ -30,8 +30,20 @@ cleaned_data <- cleaned_data %>%
   mutate(date_of_test = as.Date(date_of_test))
 
 # Filter data to include only rows with date_of_test after 2000-01-01
+cleaned_data <- cleaned_data %>% 
+  filter(date_of_test > as.Date("2000-01-01")) %>% 
+  filter(production > 100) %>% filter(comprehension > 100)
+
+# Define a mapping of categories to broader groups
 cleaned_data <- cleaned_data %>%
-  filter(date_of_test > as.Date("2000-01-01")) %>% filter(production > 0) %>% filter(comprehension > 0)
+  mutate(broad_category = case_when(
+    category %in% c("action_words", "helping_verbs") ~ "verbs",
+    category %in% c("connecting_words", "question_words", "quantifiers", "pronouns") ~ "function_words",
+    category %in% c("animals", "body_parts", "clothing", "food_drink", "furniture_rooms", 
+                    "games_routines", "household", "locations", "outside", "people", 
+                    "places", "sounds", "toys", "vehicles") ~ "nouns",
+    category %in% c("descriptive_words", "time_words") ~ "adjectives",
+    TRUE ~ "unknown"))
 
 # Omit rows with NA values
 cleaned_data <- cleaned_data %>% 

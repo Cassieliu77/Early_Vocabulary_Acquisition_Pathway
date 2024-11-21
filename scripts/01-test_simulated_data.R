@@ -105,10 +105,10 @@ test_that("'date_of_test' contains no future dates", {
   expect_true(all(simulated_data$date_of_test <= Sys.Date()))
 })
 
-# Test 16: Test if lexical_category has no unexpected categories
-valid_lexical_categories <- c("noun", "verb", "adjective", "other")
-test_that("'lexical_category' contains only valid categories", {
-  expect_true(all(simulated_data$lexical_category %in% valid_lexical_categories))
+# Test 16: Test if broad_category has no unexpected categories
+valid_broad_categories <- c("noun", "verb", "adjective", "other")
+test_that("'broad_category' contains only valid categories", {
+  expect_true(all(simulated_data$broad_category %in% valid_broad_categories))
 })
 
 # Test 17: Test if that the columns in the dataset (simulated_data) match the expected data types.
@@ -120,7 +120,7 @@ test_that("Column types are correct", {
   expect_is(simulated_data$item_kind, "character")
   expect_is(simulated_data$category, "character")
   expect_is(simulated_data$uni_lemma, "character")
-  expect_is(simulated_data$lexical_category, "character")
+  expect_is(simulated_data$broad_category, "character")
   expect_is(simulated_data$date_of_test, "Date")
   expect_is(simulated_data$age, "numeric") 
   expect_is(simulated_data$comprehension, "numeric")
