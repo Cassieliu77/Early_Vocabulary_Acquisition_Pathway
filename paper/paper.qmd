@@ -4,22 +4,31 @@ subtitle: "My subtitle if needed"
 author: 
   - First author
   - Another author
-thanks: "Code and data are available at: [https://github.com/RohanAlexander/starter_folder](https://github.com/RohanAlexander/starter_folder)."
+thanks: "Code and data are available at: ."
 date: today
 date-format: long
 abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
 format: pdf
+toc: true
 number-sections: true
 bibliography: references.bib
 ---
 
 ```{r}
+#| echo: false
 #| include: false
 #| warning: false
 #| message: false
 
 library(tidyverse)
-library(palmerpenguins)
+library(arrow)
+library(rstanarm)
+library(modelsummary)
+library(knitr)
+library(ggplot2)
+
+
+logistic_model <- readRDS(here::here("models/logistic_model_last.rds"))
 ```
 
 
@@ -35,7 +44,7 @@ Why it matters paragraph
 
 Telegraphing paragraph: The remainder of this paper is structured as follows. @sec-data....
 
-
+@wordbankr
 
 
 
@@ -65,34 +74,22 @@ Some of our data is of penguins (@fig-bills), from @palmerpenguins.
 #| fig-cap: Bills of penguins
 #| echo: false
 
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
+
 ```
 
 Talk more about it.
 
-And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
+And also planes (@fig-data). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
 
 ```{r}
-#| label: fig-planes
+#| label: fig-data
 #| fig-cap: Relationship between wing length and width
 #| echo: false
 #| warning: false
 #| message: false
 
-analysis_data <- read_csv(here::here("data/02-analysis_data/analysis_data.csv"))
+analysis_data <- read_parquet(here::here("data/02-analysis_data/cleaned_data.parquet"))
 
-analysis_data |> 
-  ggplot(aes(x = width, y = length)) +
-  geom_point(alpha = 0.8) +
-  theme_minimal() +
-  labs(x = "Wing width (mm)",
-       y = "Wing length (mm)")
 ```
 
 Talk way more about it. 
@@ -112,36 +109,83 @@ Use sub-sub-headings for each outcome variable and feel free to combine a few in
 
 # Model
 
-The goal of our modelling strategy is twofold. Firstly,...
+## Model Selection
 
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
+To investigate the relationship between children’s vocabulary acquisition and their demographic and linguistic characteristics, we constructed a logistic regression model. By examining key demographic and linguistic predictors, we aim to identify how characteristics like age, norming status, and word categories influence vocabulary development. The dependent variable, high_vocabulary, is a binary outcome indicating whether a child’s average production and comprehension score (denoted as prod_comp_mean) exceeds 350. This threshold was chosen to distinguish children with relatively advanced vocabulary levels. More background details and diagnostics are included in [Appendix -@sec-model-details].
 
-## Model set-up
+## Logistic Regression Model Overview
 
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
+- High Vocabulary: The outcome variable, high_vocabulary, is a binary indicator that takes the value of 1 if the average production and comprehension score (prod_comp_mean) exceeds 350 and 0 otherwise. This threshold was selected to represent children with relatively advanced vocabulary skills, determined through exploratory data analysis.
+- Scaled Age (age_scaled): This continuous variable represents the child’s age, standardized to ensure the model coefficients reflect changes per standard deviation in age. Standardization improves numerical stability and aids interpretability.
+- Norming Status (is_norming): A binary indicator denoting whether a child is part of the norming dataset (TRUE) or not (FALSE). This variable accounts for potential differences in data collection or assessment protocols.
+- Broad Category (broad_category): A categorical variable grouping words into four broad linguistic categories: nouns, verbs, adjectives, and function_words. The reference category is function_words.
 
-\begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
+
+The model takes the form:
+\begin{align}
+\log \left( \frac{p_i}{1 - p_i} \right) &= \beta_0 + \beta_1 \cdot \text{age\_scaled}_i + \beta_2 \cdot \text{is\_normingTRUE}_i \\
+&\quad + \beta_3 \cdot \text{broad\_categoryNouns}_i \\
+&\quad + \beta_4 \cdot \text{broad\_categoryFunction\_words}_i \\
+&\quad + \beta_5 \cdot \text{broad\_categoryVerbs}_i
 \end{align}
 
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
 
+Where:
 
-### Model justification
+- $p_i$ represents the probability that person i has a high vocabulary
+- $\beta_0$ is the intercept, capturing the baseline log-odds when all predictors are at their reference or mean levels
+- $\beta_1$: Effect of age (standardized)
+- $\beta_2$: The effect of whether the individual belongs to the norming group
+- $\beta_3$, $\beta_4$, $\beta_5$: The effects of being in the respective broad word categories (nouns, function words, or verbs), compared to the reference category (likely “adjectives”).
 
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
+## Model Assumpations
+- Linearity of the Logit: The model assumes a linear relationship between the log-odds of the outcome and the independent variables. Standardizing age ensures this assumption is more likely to hold.
+- Independent Observations: The data points are assumed to be independent, which is valid given the dataset structure.
+- Categorical Variable Encoding: The broad category variable was encoded using sum contrasts to test the deviation of each category from the overall mean effect.
 
-We can use maths by including latex between dollar signs, for instance $\theta$.
+## Interpretation of Coefficients
+The logistic regression coefficient ($\beta$) represents the change in the log-odds of the dependent variable (high vocabulary) for a one-unit change in the predictor variable, holding all other variables constant.
+
+- Intercept ($\beta_0$):
+•	Represents the log-odds of high vocabulary when all predictors are at their reference or mean levels.
+•	For example, if $\beta_0$ > 0, the baseline odds of high vocabulary are greater than 50%.
+
+- Scaled Age ($\beta_1$):
+Interpretation: For each one standard deviation increase in age, the log-odds of high vocabulary increase by $\beta_1$.
+Example: If $\beta_1 = 0.5$, then $\exp(0.5) \approx 1.65$, meaning the odds increase by 65% for every one standard deviation increase in age.
+
+- Norming Status ($\beta_2$): If a child belongs to the norming group, the log-odds of high vocabulary increase by $\beta_2$ compared to non-norming children. If $\beta_2 = 0.1$, then $\exp(0.1) \approx 1.11$, meaning being in the norming group increases the odds of high vocabulary by 11%.
+
+- Broad Category ($\beta_3$, $\beta_4$, $\beta_5$): The coefficients for broad_category represent the difference in log-odds compared to the reference category (“adjectives”). 
+  Interpretation:
+   - $\beta_3$ (Function Words): A positive $\beta_3$ indicates higher odds of high vocabulary for function words compared to adjectives
+   - $\beta_4$ (Nouns): A negative $\beta_4$ indicates lower odds of high vocabulary for nouns compared to adjectives
+   - $\beta_5$ (Verbs): If $\beta_5 = 0$, there is no difference in odds between verbs and adjectives.
+
+General Example for Broad Categories:
+
+If $\beta_3 = 0.01$, $\exp(0.01) \approx 1.01$, meaning function words increase the odds by 1% compared to adjectives.
+
+## Model Justification
+
+The model was trained on 80% of the dataset, with the remaining 20% reserved for testing. Model performance was assessed using confusion matrices and overall accuracy. Further evaluation included the analysis of residual deviance, AIC, and interpretation of individual coefficients.
+
+```{r}
+#| echo: false
+#| eval: true
+#| label: tbl-modelsummary
+#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
+#| warning: false
+
+modelsummary(list("Logistic model" = logistic_model), statistic = "std.error", fmt = 2)
+
+```
+
 
 
 # Results
 
-Our results are summarized in @tbl-modelresults.
+Our results are summarized in .
 
 ```{r}
 #| echo: false
@@ -149,28 +193,89 @@ Our results are summarized in @tbl-modelresults.
 #| warning: false
 #| message: false
 
-library(rstanarm)
+analysis_data_test <- read_parquet(here::here("data/02-analysis_data/test_data.parquet"))
 
-first_model <-
-  readRDS(file = here::here("models/first_model.rds"))
+# Preprocess test data
+analysis_data_test <- analysis_data_test %>%
+  mutate(
+    # Create new variables for prediction
+    prod_comp_mean = (production + comprehension) / 2,  # Average of production and comprehension
+    high_vocabulary = ifelse(prod_comp_mean > 350, 1, 0),  # Binary target variable
+    age_scaled = scale(age)  # Standardize age
+  ) %>%
+  drop_na(prod_comp_mean)  # Drop rows with NA in prod_comp_mean
+analysis_data_test$age_scaled <- as.numeric(analysis_data_test$age_scaled)
+
+# Predict probabilities for test data
+predicted_probabilities <- predict(logistic_model, newdata = analysis_data_test, type = "response")
+
+# Predict classes based on probabilities
+predicted_classes <- ifelse(predicted_probabilities > 0.5, 1, 0)
+
+# Create a confusion matrix
+confusion_matrix <- table(
+  Actual = analysis_data_test$high_vocabulary,
+  Predicted = predicted_classes
+)
+print(confusion_matrix)
+
+accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
+print(paste("Accuracy:", accuracy))
 ```
 
 ```{r}
 #| echo: false
 #| eval: true
-#| label: tbl-modelresults
-#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
+#| label: fig-modelresult
+#| fig-cap: How the probability of high vocabulary varies with age by aggregating the predictions for each age group
 #| warning: false
 
-modelsummary::modelsummary(
-  list(
-    "First model" = first_model
-  ),
-  statistic = "mad",
-  fmt = 2
-)
+# Add predicted probabilities to the test dataset
+analysis_data_test <- analysis_data_test %>%
+  mutate(predicted_prob = predict(logistic_model, newdata = analysis_data_test, type = "response"))
+
+# Ensure the broad_category column is included in the test data
+analysis_data_test <- analysis_data_test %>%
+  mutate(broad_category = case_when(
+    category %in% c("action_words", "helping_verbs") ~ "verbs",
+    category %in% c("connecting_words", "question_words", "quantifiers", "pronouns") ~ "function_words",
+    category %in% c("animals", "body_parts", "clothing", "food_drink", "furniture_rooms", 
+                    "games_routines", "household", "locations", "outside", "people", 
+                    "places", "sounds", "toys", "vehicles") ~ "nouns",
+    category %in% c("descriptive_words", "time_words") ~ "adjectives",
+    TRUE ~ NA_character_
+  ))
+
+# Aggregate mean predicted probabilities by age and broad_category
+age_broad_category_predictions <- analysis_data_test %>%
+  group_by(age, broad_category) %>%
+  summarize(mean_predicted_prob = mean(predicted_prob, na.rm = TRUE), .groups = "drop")
+
+broad_category_summary <- age_broad_category_predictions %>%
+  group_by(broad_category) %>%
+  summarize(overall_mean_prob = mean(mean_predicted_prob, na.rm = TRUE))
+
 ```
 
+The density plot highlights distinct patterns in predicted probabilities, with nouns and verbs showing higher peaks, indicating a stronger likelihood of high vocabulary acquisition in these categories. This suggests that broad categories contribute differently to vocabulary development, with nouns and verbs potentially playing a more significant role.
+
+```{r}
+#| echo: false
+#| eval: true
+#| label: fig-prediction
+#| fig-cap: Distribution of predicted probabilities for high vocabulary acquisition across broad broad categories (adjectives, function words, nouns, and verbs). 
+#| warning: false
+
+ggplot(analysis_data_test, aes(x = predicted_prob, fill = broad_category)) +
+  geom_density(alpha = 0.5) +
+  labs(
+    title = "Distribution of Predicted Probabilities by Broad Category",
+    x = "Predicted Probability",
+    y = "Density",
+    fill = "Broad Category"
+  ) +
+  theme_minimal()
+```
 
 
 
@@ -217,15 +322,7 @@ In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. Th
 #| fig-cap: "Examining how the model fits, and is affected by, the data"
 #| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
 
-pp_check(first_model) +
-  theme_classic() +
-  theme(legend.position = "bottom")
 
-posterior_vs_prior(first_model) +
-  theme_minimal() +
-  scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom") +
-  coord_flip()
 ```
 
 ## Diagnostics
@@ -244,9 +341,9 @@ posterior_vs_prior(first_model) +
 #| fig-subcap: ["Trace plot", "Rhat plot"]
 #| layout-ncol: 2
 
-plot(first_model, "trace")
+#plot(first_model, "trace")
 
-plot(first_model, "rhat")
+#plot(first_model, "rhat")
 ```
 
 

@@ -1,4 +1,4 @@
-data_id,item_id,language,form,item_kind,category,uni_lemma,lexical_category,date_of_test,age,comprehension,production,is_norming,child_id
+data_id,item_id,language,form,item_kind,category,uni_lemma,broad_category,date_of_test,age,comprehension,production,is_norming,child_id
 1,item_3,Korean,Words and Sentences,word_forms_verbs,locations,fish (animal),adjective,2010-03-10,28,212,212,FALSE,11888
 2,item_14,French,Short Form of Words and Sentences,gestures_adult,household,juice,other,2010-09-30,42,498,498,TRUE,11898
 3,item_4,Thai,Words and Sentences,how_use_words,question_words,ice cream,other,2010-09-20,42,475,257,FALSE,92506
