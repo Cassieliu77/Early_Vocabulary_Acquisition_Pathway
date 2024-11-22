@@ -20,7 +20,7 @@ library(arrow)
 raw_data <- read_parquet("data/01-raw_data/raw_data.parquet")
 
 # Select the needed columns
-cleaned_data <- raw_data %>% select(data_id, item_id, language, form, item_kind, 
+cleaned_data <- raw_data %>% select(data_id, language, form, item_kind, 
                                  category, uni_lemma, date_of_test,
                                  age, comprehension, production, 
                                  is_norming, child_id)
@@ -37,13 +37,23 @@ cleaned_data <- cleaned_data %>%
 # Define a mapping of categories to broader groups
 cleaned_data <- cleaned_data %>%
   mutate(broad_category = case_when(
-    category %in% c("action_words", "helping_verbs") ~ "verbs",
-    category %in% c("connecting_words", "question_words", "quantifiers", "pronouns") ~ "function_words",
-    category %in% c("animals", "body_parts", "clothing", "food_drink", "furniture_rooms", 
-                    "games_routines", "household", "locations", "outside", "people", 
-                    "places", "sounds", "toys", "vehicles") ~ "nouns",
-    category %in% c("descriptive_words", "time_words") ~ "adjectives",
-    TRUE ~ "unknown"))
+    category %in% c("action_words", "helping_verbs") ~ "Verbs",
+    category %in% c("connecting_words", "question_words", "quantifiers", "pronouns") ~ "Function Words",
+    category %in% c("animals", "body_parts", "people") ~ "Living Things",
+    category %in% c("clothing", "food_drink", "furniture_rooms", "household", "toys", "vehicles") ~ "Objects",
+    category %in% c("games_routines") ~ "Activities",
+    category %in% c("sounds") ~ "Sensory Words",
+    category %in% c("descriptive_words", "time_words") ~ "Adjectives",
+    category %in% c("locations", "places", "outside") ~ "Places",
+    TRUE ~ "unknown"
+  ))
+
+# Combine production and comprehension into a new variable
+cleaned_data <- cleaned_data %>%
+  mutate(prod_comp_mean = (production + comprehension)/2,  # Average of production and comprehension
+         high_vocabulary = ifelse(prod_comp_mean > 350, 1, 0)  # Binary target variable
+  ) %>%
+  drop_na(prod_comp_mean) 
 
 # Omit rows with NA values
 cleaned_data <- cleaned_data %>% 

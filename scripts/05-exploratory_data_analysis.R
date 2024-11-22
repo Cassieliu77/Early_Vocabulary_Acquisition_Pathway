@@ -85,6 +85,25 @@ ggplot(analysis_data, aes(x = is_norming)) +
   labs(title = "Proportion of Norming Data", x = "Is Norming?", y = "Count") +
   theme_minimal()
 
+# B8. Plot the Distribution of 'High Vocabulary'
+outcome_counts <- analysis_data %>%
+  count(high_vocabulary) %>%
+  mutate(
+    VocabularyCategory = ifelse(high_vocabulary == 1, "High Vocabulary", "Not High Vocabulary")
+  )
+
+ggplot(outcome_counts, aes(x = VocabularyCategory, y = n, fill = VocabularyCategory)) +
+  geom_bar(stat = "identity", width = 0.6, show.legend = FALSE) +
+  labs(
+    title = "Distribution of Outcome Variable: High Vocabulary",
+    x = "Vocabulary Category",
+    y = "Count"
+  ) +
+  theme_minimal() +
+  theme(
+    text = element_text(size = 12),
+    plot.title = element_text(hjust = 0.5)
+  )
 #-------------------------------------------------------------------------------
 ### Part C: Visualize Relation between Variables ###
 # C1. Vocabulary size by age:Plot Production by Age to see how children’s vocabulary develops over time

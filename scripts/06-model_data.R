@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Model for the vocabulary size prediction
+# Purpose: Build the logistic regression model for the vocabulary size prediction
 # Author: Yongqi Liu
 # Date: 15 Nov 2024 
 # Contact: cassieliu.liu@mail.utoronto.ca
