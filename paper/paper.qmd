@@ -1,5 +1,5 @@
 ---
-title: "Investigation Vocabulary Learning Pattern"
+title: "English Vocabulary Learning Pattern"
 subtitle: "My subtitle if needed"
 author: Yongqi Liu
 thanks: "Code and data are available at: https://github.com/Cassieliu77/Vocabulary_Learning_Pattern.git"
@@ -20,12 +20,12 @@ bibliography: references.bib
 
 library(tidyverse)
 library(arrow)
-library(rstanarm)
 library(modelsummary)
 library(knitr)
 library(dplyr)
 library(ggplot2)
 library(scales)
+library(wordbankr)
 
 analysis_data <- read_parquet(here::here("data/02-analysis_data/cleaned_data.parquet"))
 logistic_model <- readRDS(here::here("models/logistic_model_last.rds"))
@@ -42,9 +42,12 @@ Results paragraph
 
 Why it matters paragraph
 
-Telegraphing paragraph: The remainder of this paper is structured as follows. @sec-data....
+Telegraphing paragraph: The remainder of this paper is structured as follows. @sec-data descirbe the dataset in detail, and shows the distribution of variables. 
 
-The data used in this study comes from @wordbankr, and all analysis are conducted in @citeR
+The data used in this study comes from @wordbankr, and the whole paper is conducted and analyzed in @citeR
+
+
+
 
 
 
@@ -53,21 +56,16 @@ The data used in this study comes from @wordbankr, and all analysis are conducte
 
 ## Overview
 
-This study uses R packages [@citeR] to clean and analyze the dataset, including libraries 
-from tidyverse [@tidyverse], ggplot2 [@ggplot2], knitr [@knitr], arrow [@arrow]. 
-We use the statistical programming language R [@citeR].... Our data [@wordbankr]
-
-After cleaning the data, which included grouping and removing missing values, the following analysis focuses on category, age, comprehension, production, is_norming, broad_category columns in the analysis dataset. @tbl-data shows the overview of the dataset.
+The original dataset was obtained from @wordbankr. After undergoing a thorough cleaning process—including grouping related items and removing missing values—the analysis focuses on the key variables: category, age, comprehension, production, is_norming, and broad_category. These variables form the foundation of the analysis dataset. An overview of the cleaned dataset is presented in @tbl-data.
 
 ```{r}
 #| label: tbl-data
-#| tbl-cap: Summary Table for the Word Bank Dataset
+#| tbl-cap: Cleaned Word Bank Dataset
 #| echo: false
 
 summary_table <- analysis_data %>%
-  select(data_id, language, age, is_norming, broad_category, production, high_vocabulary) %>%
+  select(language, age, is_norming, broad_category, production, high_vocabulary) %>%
   rename(
-    Data_ID = data_id,
     Language = language,
     Age = age,
     Is_Norming = is_norming,
@@ -79,8 +77,28 @@ kable(head(summary_table, 10))
 ```
 
 ## Measurement
-	
-Some paragraphs about how we go from a phenomena in the world to an entry in the dataset.
+
+### Data Collection and Quality Control
+
+The objective of measurement in this study is to translate raw parental reports into reliable indicators of vocabulary acquisition patterns in children. The data is derived from the MacArthur-Bates Communicative Development Inventories (CDI), a widely used tool that collects information on children’s vocabulary comprehension and production through structured parental surveys. These surveys allow parents to report on their child’s understanding and use of specific words, grouped into lexical categories such as nouns, verbs, and adjectives. The raw data collected through the CDI forms the basis for creating the study’s dependent and independent variables.
+
+	-	Structured Response Formats: The CDI employs predefined response options for comprehension and production, reducing ambiguity and enhancing consistency in parental reporting.
+	-	Lexical Categorization: Vocabulary items are grouped into meaningful lexical categories, allowing for a more nuanced understanding of children’s vocabulary development across different word types.
+	-	Norming Group Comparison: The inclusion of norming groups as benchmarks helps to ensure the validity of reported vocabulary scores and allows for cross-child comparison. These groups provide a standardized reference for analyzing individual differences in language acquisition.
+	- Variable Standardization: Continuous variables, such as age, are standardized (e.g., scaled) to reduce variability and improve the interpretability of statistical models. This ensures that coefficients reflect meaningful changes in relation to standardized measures.
+	-	Bias Mitigation: By structuring responses and including norming benchmarks, the CDI minimizes some of the biases inherent in self-reported data, such as over- or underestimation by parents.
+	-	Missing Data Handling: Observations with incomplete or invalid responses were excluded from the analysis to maintain the integrity and reliability of the dataset.
+
+### Reporting Bias
+
+However, there are several considerations regarding the data collection process:
+
+-	Parental Reporting Bias: The reliance on parental reports introduces the potential for bias, including overestimation or underestimation of a child’s abilities. This is inherent to self-reported data and can affect the accuracy of the results.
+-	Standardized Format and Structure: The CDI employs predefined response categories, which help to minimize ambiguity in reporting and ensure consistency across respondents. This structured approach mitigates some reporting variability but may not fully capture nuances in vocabulary acquisition.
+-	Norming Group Representation: To improve validity, a subset of children from norming groups is included as a benchmark for comparison. While useful, this raises concerns about whether the norming group adequately represents the population’s diversity in language development.
+-	Temporal Limitations: The CDI data represents snapshots of vocabulary development at specific ages, which may not account for rapid changes or variations over time in a child’s language acquisition process.
+
+Despite its standardized structure, the CDI is subject to biases inherent in parental reporting, including Over or Underestimation Bias. Parents may unintentionally over- or underestimate their child’s skills due to subjective perceptions or limited observations. Social Desirability Bias: Responses may be influenced by parents’ desire to portray their child’s language development favorably.
 
 ## Outcome Variable
 
@@ -93,7 +111,6 @@ The outcome variable in this study, High Vocabulary Score, is a binary indicator
 2. Production: This variable captures the ability to produce words, reflecting expressive language skills. Like comprehension, production scores are numerical and provide the standard into verbal articulation capabilities.
 
 3. The High Vocabulary Score is calculated using the average of comprehension and production scores for each individual. This average is represented as: $\text{prod\_comp\_mean} = \frac{\text{Comprehension} + \text{Production}}{2}$
-
 
 To classify individuals, a threshold value of 350 is applied to `prod_comp_mean`:
 - Individuals with `prod_comp_mean > 350` are classified as having a high vocabulary score (outcome = 1).
@@ -131,13 +148,17 @@ ggplot(outcome_counts, aes(x = VocabularyCategory, y = n, fill = VocabularyCateg
 
 
 ## Predictor variables
+
 ### Age
-And also planes (@fig-age). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
+
+@fig-age displays the distribution of children’s ages (in months) within the dataset, highlighting key patterns in the sample’s demographic structure. A notable concentration of data is observed among children aged between 24 and 30 months, reflecting an emphasis on capturing vocabulary development during critical periods of language acquisition. These age ranges are known to mark significant milestones in linguistic growth, which could explain their higher representation. Conversely, younger age groups (below 20 months) are underrepresented, likely due to the challenges of assessing vocabulary at earlier stages of development, where verbal communication is less pronounced and parental reporting is more variable.
+
+The dataset also shows distinct peaks at specific ages, such as 25 and 30 months. These sharp spikes may reflect intentional focus points for testing or developmental benchmarks tied to standardized assessments like the MacArthur-Bates Communicative Development Inventories (CDI). This uneven age distribution underscores the importance of age as a critical factor in analyzing vocabulary acquisition. While the high concentration of data at older ages enhances insights into advanced vocabulary development, it also necessitates caution in generalizing findings to underrepresented age groups. This observation emphasizes the need to standardize age in statistical models to account for variability across different age groups.
 
 ```{r}
 #| echo: false
 #| label: fig-age
-#| fig-cap: Age Distribution
+#| fig-cap: It shows the distribution of children’s ages (in months) within the dataset. The majority of observations fall between 24 and 30 months, with noticeable peaks at 25 and 30 months, reflecting a focus on key developmental periods. Younger age groups are underrepresented, highlighting the need to account for variability in age when analyzing vocabulary acquisition patterns.
 #| warning: false
 #| message: false
 
@@ -147,29 +168,39 @@ ggplot(analysis_data, aes(x = age)) +
   theme_minimal()
 
 ```
+
 ### Broad Category
+The words in the dataset were grouped into broad lexical categories to facilitate the analysis of vocabulary acquisition patterns. These categories include Activities, Adjectives, Function Words, Living Things, Objects, Places, Sensory Words, and Verbs. The classification was based on the semantic and functional roles of words, with nouns subdivided into more specific groups such as Living Things, Objects, and Places to capture distinct trends in vocabulary acquisition. For instance, Function Words include pronouns and question words, reflecting grammatical development, while Verbs and Adjectives capture action and descriptive words, essential for sentence construction and expression.
+
+The bar graph illustrates the distribution of items across these categories, highlighting significant variation in word frequency. Objects constitute the largest category, suggesting a focus on tangible and concrete items, which are likely easier for children to recognize and recall. This is followed by Verbs and Living Things, categories that are fundamental to communication but slightly less prevalent. In contrast, Sensory Words and Activities are sparsely represented, possibly reflecting their specialized and context-dependent nature. The distribution underscores the importance of concrete and functional words in early vocabulary development while highlighting potential gaps in underrepresented categories. This variation provides a foundation for exploring how lexical diversity influences vocabulary acquisition patterns.
 
 ```{r}
 #| echo: false
 #| label: fig-category
-#| fig-cap:  Distribution of Word Categories. This bar plot illustrates the distribution of items across broad linguistic categories in the dataset. “Objects” dominate the dataset, followed by “Verbs” and “Living Things,” indicating that the dataset is rich in concrete nouns and action-related words, with smaller proportions of sensory words and adjectives.
+#| fig-cap: The figure shows objects dominate the vocabulary, reflecting an emphasis on concrete and tangible terms, while categories like Sensory Words and Activities are less frequently represented, indicating the relative complexity or specificity of these word types in early language acquisition
 #| warning: false
 #| message: false
 
 ggplot(analysis_data, aes(x = broad_category)) +
   geom_bar(fill = "steelblue", color = "white", alpha = 0.8) +
-  labs(title = "Category Distribution", x = "Broad Category", y = "Count") +
+  labs(title = "Reclassified Category Distribution", x = "Broad Category", y = "Count") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-### Is Norming or Not
+### Norming Status
+
+Norming status categorizes children into two groups: those included in the norming group and those who are not. The norming group represents a standardized sample used as a benchmark for assessing vocabulary development, providing a reference point for evaluating other children in the dataset. This distinction is important for ensuring the validity and reliability of comparisons in the analysis.
+
+The bar plot illustrates the distribution of children based on their norming status. The dataset is predominantly composed of non-norming children, with only a small fraction representing the norming group. This imbalance reflects the practical challenges of including a broad and representative norming sample in large-scale vocabulary assessments. While the non-norming group provides diverse data for analysis, the norming group offers a crucial baseline for calibrating and interpreting the results. The distribution highlights the need to account for this imbalance in the analysis to avoid potential biases and ensure robust conclusions.
+
 ```{r}
 #| echo: false
 #| label: fig-norming
-#| fig-cap: Norming Group Distribution. This plot shows the distribution of children in the dataset categorized by their norming status. The majority of the observations are from non-norming children, with only a small fraction representing norming children.
+#| fig-cap: The dataset is primarily composed of non-norming children, with a smaller subset belonging to the norming group, serving as a standardized benchmark for assessing vocabulary development
 #| warning: false
 #| message: false
+
 ggplot(analysis_data, aes(x = is_norming)) +
   geom_bar(fill = "steelblue", color = "white", alpha = 0.8) +
   labs(title = "Norming Distribution", x = "Norming or not", y = "Count") +
@@ -178,12 +209,11 @@ ggplot(analysis_data, aes(x = is_norming)) +
 ```
 
 
-
 # Model
 
 ## Model Selection
 
-To investigate the relationship between children’s vocabulary acquisition and their demographic and linguistic characteristics, we constructed a logistic regression model. By examining key demographic and linguistic predictors, we aim to identify how characteristics like age, norming status, and word categories influence vocabulary development. The dependent variable, high_vocabulary, is a binary outcome indicating whether a child’s average production and comprehension score (denoted as prod_comp_mean) exceeds 350. This threshold was chosen to distinguish children with relatively advanced vocabulary levels. More background details and diagnostics are included in [Appendix-@sec-model-details].
+To investigate the relationship between children’s vocabulary acquisition and their demographic and linguistic characteristics, we constructed a logistic regression model. By examining key demographic and linguistic predictors, we aim to identify how characteristics like age, norming status, and word categories influence vocabulary development. The dependent variable, high_vocabulary, is a binary outcome indicating whether a child’s average production and comprehension score (denoted as prod_comp_mean) exceeds 350. This threshold was chosen to distinguish children with relatively advanced vocabulary levels. More background details and diagnostics are included in [Appendix-@sec-model].
 
 ## Logistic Regression Model Overview
 
@@ -214,27 +244,20 @@ Where:
 - $\beta_3$, $\beta_4$, $\beta_5$, etc.: The effects of being in the respective broad word categories (nouns, function words, or verbs), compared to the reference category (likely “adjectives”).
 
 ## Model Assumptions
+
 - Linearity of the Logit: The model assumes a linear relationship between the log-odds of the outcome (high vocabulary) and the independent variables. For example, the standardized age variable (age_scaled) assumes that for every one standard deviation increase in age, the log-odds of achieving a high vocabulary score increase by a constant amount. Standardizing age ensures that the variable is centered and scaled, making it easier to meet this linearity assumption and interpret its effect across the dataset.
 - Independent Observations: The model assumes that all data points are independent. This assumption holds because each observation represents data from a unique child, with no repeated measurements for the same individual. For instance, there are no longitudinal observations or nested data structures (e.g., children grouped by classrooms or schools) that could violate independence. If dependence were present, a more complex model like a mixed-effects logistic regression would be necessary.
-- Categorical Variable Encoding: The broad_category variable, which includes categories such as “Adjectives,” “Verbs,” and “Living Things,” was encoded using sum contrasts. This approach ensures that the coefficients for each category represent the deviation of that category’s effect from the overall mean effect across all categories. For example, the coefficient for “Verbs” indicates how the log-odds of achieving a high vocabulary differ for “Verbs” compared to the average effect of all other categories. Sum contrasts are particularly useful for understanding relative effects and ensure that the intercept reflects the overall mean effect when all predictors are at their reference or average levels.
+- Categorical Variable Encoding: The broad_category variable, which includes categories such as “Adjectives,” “Verbs,” and “Living Things,” was encoded using sum contrasts. This approach ensures that the coefficients for each category represent the deviation of that category’s effect from the overall mean effect across all categories. For example, the coefficient for “Verbs” indicates how the log odds of achieving a high vocabulary differ for “Verbs” compared to the average effect of all other categories. Sum contrasts are particularly useful for understanding relative effects and ensure that the intercept reflects the overall mean effect when all predictors are at their reference or average levels.
 
 ## Interpretation of Coefficients
+
 The logistic regression coefficient ($\beta$) represents the change in the log-odds of the dependent variable (high vocabulary) for a one-unit change in the predictor variable, holding all other variables constant.
 
 - Intercept ($\beta_0$): Represents the log-odds of high vocabulary when all predictors are at their reference or mean levels. If $\beta_0$ > 0, the baseline odds of high vocabulary are greater than 50%.
 - Scaled Age ($\beta_1$): For each one standard deviation increase in age, the log-odds of high vocabulary increase by $\beta_1$. If $\beta_1 = 0.5$, then $\exp(0.5) \approx 1.65$, meaning the odds increase by 65% for every one standard deviation increase in age.
 - Norming Status ($\beta_2$): If a child belongs to the norming group, the log-odds of high vocabulary increase by $\beta_2$ compared to non-norming children. If $\beta_2 = 0.1$, then $\exp(0.1) \approx 1.11$, meaning being in the norming group increases the odds of high vocabulary by 11%.
-
 - Broad Category ($\beta_3$, $\beta_4$, $\beta_5$, etc.): The coefficients for `broad_category` represent the difference in log-odds compared to the reference category (“Adjectives”).  
-
-Interpretation:  
-  - $\beta_3$ (Function Words): A positive $\beta_3$ indicates higher odds of having a high vocabulary for function words compared to adjectives. For instance, if $\beta_3 = 0.002$, then $\exp(0.002) \approx 1.002$, meaning the odds of having a high vocabulary for function words are 0.2% higher than for adjectives.  
-  - $\beta_4$ (Living Things): A negative $\beta_4$ indicates lower odds of having a high vocabulary for living things compared to adjectives. For example, if $\beta_4 = -0.007$, then $\exp(-0.007) \approx 0.993$, meaning the odds of having a high vocabulary for living things are 0.7% lower than for adjectives.  
-  - $\beta_5$ (Objects): If $\beta_5 = -0.008$, then $\exp(-0.008) \approx 0.992$, indicating that objects are associated with 0.8% lower odds of having a high vocabulary compared to adjectives.  
-  - $\beta_6$ (Verbs): If $\beta_6 = -0.005$, then $\exp(-0.005) \approx 0.995$, meaning verbs are associated with 0.5% lower odds of having a high vocabulary compared to adjectives.  
-
-General Example for Broad Categories:  
-  If a coefficient $\beta_k = 0.01$, $\exp(0.01) \approx 1.01$, meaning the corresponding category increases the odds of having a high vocabulary by 1% compared to the reference category (Adjectives). Conversely, if $\beta_k = -0.01$, $\exp(-0.01) \approx 0.99$, indicating a 1% decrease in odds compared to the reference category.
+  - $\beta_3$ (Function Words): A positive $\beta_3$ indicates higher odds of having a high vocabulary for function words compared to adjectives. For instance, if $\beta_3 = 0.002$, then $\exp(0.002) \approx 1.002$, meaning the odds of having a high vocabulary for function words are 0.2% higher than for adjectives. General Example for Broad Categories: If a coefficient $\beta_k = 0.01$, $\exp(0.01) \approx 1.01$, meaning the corresponding category increases the odds of having a high vocabulary by 1% compared to the reference category (Adjectives). Conversely, if $\beta_k = -0.01$, $\exp(-0.01) \approx 0.99$, indicating a 1% decrease in odds compared to the reference category.
 
 
 ## Model Justification
@@ -246,13 +269,16 @@ The model was trained on 80% of the dataset, with the remaining 20% reserved for
 # Results
 
 ## Average Production by Broad Category and Age
+
 @fig-average shows..
+
 ```{r}
 #| echo: false
 #| eval: true
 #| label: fig-average
 #| fig-cap: xx 
 #| warning: false
+#| message: false
 
 analysis_data %>%
   group_by(broad_category, age) %>%
@@ -276,6 +302,7 @@ analysis_data %>%
 ```
 
 ## Prediciton for the Probability of High Vocabulary Level
+
 ```{r}
 #| echo: false
 #| eval: true
@@ -316,6 +343,7 @@ print(paste("Accuracy:", accuracy))
 #| label: fig-goodgood
 #| fig-cap: How the probability of high vocabulary varies with age by aggregating the predictions for each age group
 #| warning: false
+#| message: false
 
 # Add predicted probabilities to the test dataset
 analysis_data_test <- analysis_data_test %>%
@@ -332,10 +360,9 @@ broad_category_summary <- age_broad_category_predictions %>%
 
 ```
 
+## Distribution of Predicted Probabilities by Broad Category
 
-### Distribution of Predicted Probabilities by Broad Category
-
-@fig-prediction illustrates the distribution of predicted probabilities for high vocabulary levels across various broad categories. The density curves show distinct peaks and variability, reflecting the differences in how well each category predicts high vocabulary. Notably, “Sensory Words” and “Objects” exhibit higher density in the middle range of predicted probabilities, suggesting moderate association with high vocabulary. In contrast, categories like “Activities” and “Function Words” have wider, flatter distributions, indicating greater uncertainty or diversity in prediction. This variability highlights the nuanced role of word categories in predicting high vocabulary acquisition. Further analysis could explore why certain categories contribute more consistently to predictions than others.
+The @fig-prediction illustrates the distribution of predicted probabilities for high vocabulary levels across various broad categories. The density curves show distinct peaks and variability, reflecting the differences in how well each category predicts high vocabulary. Notably, “Sensory Words” and “Objects” exhibit higher density in the middle range of predicted probabilities, suggesting moderate association with high vocabulary. In contrast, categories like “Activities” and “Function Words” have wider, flatter distributions, indicating greater uncertainty or diversity in prediction. This variability highlights the nuanced role of word categories in predicting high vocabulary acquisition. Further analysis could explore why certain categories contribute more consistently to predictions than others.
 The density plot highlights distinct patterns in predicted probabilities, with nouns and verbs showing higher peaks, indicating a stronger likelihood of high vocabulary acquisition in these categories. This suggests that broad categories contribute differently to vocabulary development, with nouns and verbs potentially playing a more significant role.
 
 ```{r}
@@ -345,21 +372,28 @@ The density plot highlights distinct patterns in predicted probabilities, with n
 #| fig-cap: This density plot illustrates the predicted probabilities of having a high vocabulary across different broad lexical categories. Each curve represents the density of predicted probabilities within a category, showcasing the variation in predicted outcomes for categories such as Activities, Adjectives, Function Words, Living Things, Objects, Places, Sensory Words, and Verbs. The plot highlights overlapping patterns and areas of divergence in vocabulary acquisition likelihood across different types of words.
 #| warning: false
 
+# Assuming `analysis_data_test` contains the predicted probabilities and broad categories
+
 ggplot(analysis_data_test, aes(x = predicted_prob, fill = broad_category)) +
-  geom_density(alpha = 0.7, color = "black") +
-  labs(title = "Distribution of Predicted Probabilities by Broad Category",
+  geom_density(alpha = 0.7, color = "black") +  # Density plot with transparency
+  facet_wrap(~ broad_category, scales = "fixed") +  # Same y-axis range for all facets
+  labs(
+    title = "Distribution of Predicted Probabilities by Category",
     x = "Predicted Probability",
     y = "Density",
     fill = "Broad Category") +
   theme_minimal(base_size = 14) +
-  theme(plot.title = element_text(hjust = 0.5, face = "bold"),
-    legend.position = "bottom",
-    legend.title = element_text(face = "bold"),
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    strip.text = element_text(size = 12, face = "bold"),  # Styling facet labels
+    legend.position = "none",  # Remove legend
     panel.grid.major = element_line(color = "gray85"),
     panel.grid.minor = element_blank()
-  )
+  ) +
+  scale_fill_brewer(palette = "Set2")  # Use a clean, appealing color palette
 ```
-
 
 
 # Discussion
@@ -380,35 +414,35 @@ Weaknesses and next steps should also be included.
 
 \newpage
 
+
+
 \appendix
 
-# Appendix {-}
+# Appendix {#-secdata}
 
-
-# Additional data details
+## Additional data details
 
 ## Data Sheet
 
-# Model details {#sec-model-details}
+# Model details {#sec-model}
 
 ## Model Summary
 
-
 ```{r}
-#| eval: true
 #| echo: false
-#| message: false
+#| eval: true
+#| label: tbl-logistic
+#| tbl-cap: model summary table
 #| warning: false
-#| label: fig-ppcheckandposteriorvsprior
-#| fig-cap: "Examining how the model fits, and is affected by, the data"
 
-modelsummary(logistic_model, statistic = "std.error", fmt = 2)
-
+modelsummary(logistic_model)
 
 ```
 
-## Diagnostics
 
+
+
+## Diagnostics
 
 ```{r}
 #| echo: false
@@ -416,13 +450,10 @@ modelsummary(logistic_model, statistic = "std.error", fmt = 2)
 #| message: false
 #| warning: false
 #| label: fig-stanareyouokay
-#| fig-cap: "Checking the convergence of the MCMC algorithm"
+#| fig-cap: Checking the convergence of the MCMC algorithm
 
-#plot(first_model, "trace")
 
-#plot(first_model, "rhat")
 ```
-
 
 
 \newpage
@@ -430,9 +461,14 @@ modelsummary(logistic_model, statistic = "std.error", fmt = 2)
 
 # Acknowledgements
 
-Thanks to Open AI and ChatGPT 4.0 is used to write the paper.
-This project utilized @citeR and a variety of R packages that provided essential tools and functionality. We thank the @tidyverse, @ggplot2 and @knitr teams for their extensive suite of tools for data manipulation and visualization, which were instrumental in data cleaning and graphing. Finally, @arrow was vital for efficient data storage and handling with Parquet files. We are grateful to the developers and maintainers of these packages for their contributions to open-source software.
+This project was conducted under the help of OpenAI’s ChatGPT 4.0, which provided invaluable assistance in drafting and refining the paper. The analysis was conducted using a suite of packages from @citeR, which offered robust functionality for data manipulation, visualization, and storage. We extend our gratitude to the teams behind the @tidyverse, @ggplot2, @scales, @dplyr, @modelsummary and @knitr packages, whose tools were instrumental in streamlining the data cleaning, analysis, and graphing processes. Additionally, @arrow played a critical role in efficient data handling and storage through Parquet files.
+
+A special acknowledgment goes to the @wordbankr team for providing the extensive dataset that forms the foundation of this research. Their contribution enabled a comprehensive exploration of vocabulary learning patterns in children. We are deeply grateful to the developers and maintainers of these open-source tools and datasets for their efforts in advancing research and accessibility in the data science community.
 
 # References
+
+
+
+
 
 

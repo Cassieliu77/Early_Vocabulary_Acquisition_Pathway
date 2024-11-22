@@ -103,7 +103,8 @@ ggplot(outcome_counts, aes(x = VocabularyCategory, y = n, fill = VocabularyCateg
   theme(
     text = element_text(size = 12),
     plot.title = element_text(hjust = 0.5)
-  )
+  ) + scale_y_continuous(
+    labels = scales::comma) 
 #-------------------------------------------------------------------------------
 ### Part C: Visualize Relation between Variables ###
 # C1. Vocabulary size by age:Plot Production by Age to see how children’s vocabulary develops over time
@@ -130,17 +131,17 @@ analysis_data %>%
     legend.title = element_text(size = 12),
     legend.text = element_text(size = 12))
 
-# C2. Average Production by Item Category and Age
+# C2. Average Production by Broad Category and Age
 analysis_data %>%
-  group_by(category, age) %>%
+  group_by(broad_category, age) %>%
   summarize(avg_production = mean(production, na.rm = TRUE), .groups = "drop") %>%
-  ggplot(aes(x = age, y = avg_production, fill = category)) +
+  ggplot(aes(x = age, y = avg_production, fill = broad_category)) +
   geom_col(position = "stack") +  # Use stack for stacked bars
   labs(
-    title = "Average Production by Item Category and Age",
+    title = "Average Production by Broad Category and Age",
     x = "Age (months)",
     y = "Average Production Score",
-    fill = "Item Category"
+    fill = "Broad Category"
   ) +
   theme_minimal() +
   theme(
