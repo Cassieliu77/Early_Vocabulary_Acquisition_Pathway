@@ -45,10 +45,10 @@ ggplot(analysis_data, aes(x = category)) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-# B3. Analyze the distribution of 'lexical_category'
-ggplot(analysis_data, aes(x = lexical_category)) +
+# B3. Analyze the distribution of 'broad_category'
+ggplot(analysis_data, aes(x = broad_category)) +
   geom_bar(fill = "steelblue", color = "white", alpha = 0.8) +
-  labs(title = "Lexical Category Distribution", x = "Lexical Category", y = "Count") +
+  labs(title = "Broad Category Distribution", x = "Broad Category", y = "Count") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -65,19 +65,30 @@ ggplot(analysis_data, aes(x = production)) +
   theme_minimal()+scale_y_continuous(labels = scales::comma)
 
 # B6. Plot the Distribution of 'date_of_test'
-ggplot(analysis_data, aes(x = month_year, y = test_count)) +
+# Ensure date_of_test is in Date format
+analysis_data <- analysis_data %>%
+  mutate(date_of_test = as.Date(date_of_test))
+
+# Group by month-year and calculate the number of tests
+analysis_data_summary <- analysis_data %>%
+  group_by(date_of_test = floor_date(date_of_test, unit = "month")) %>%
+  summarize(test_count = n(), .groups = "drop")
+
+ggplot(analysis_data_summary, aes(x = date_of_test, y = test_count)) +
   geom_col(fill = "blue", color = "white", alpha = 1) + 
-  labs(title = "Monthly Distribution of Test Dates",
+  labs(
+    title = "Monthly Distribution of Test Dates",
     subtitle = "Visualizing the count of tests conducted each month",
     x = "Month-Year",
-    y = "Number of Tests") +
-  scale_x_date(date_labels = "%b %Y", date_breaks = "6 months",  
-    expand = c(0.01, 0)) +
-  scale_y_continuous(
-    labels = scales::comma) +
-  theme_minimal(base_size = 14) +  # Clean minimal theme
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),  
-    plot.title = element_text(face = "bold", size = 16, hjust = 0.5))
+    y = "Number of Tests"
+  ) +
+  scale_x_date(date_labels = "%b %Y", date_breaks = "6 months", expand = c(0.01, 0)) +
+  scale_y_continuous(labels = comma) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),  
+    plot.title = element_text(face = "bold", size = 16, hjust = 0.5)
+  )
 
 # B7. Plot the Distribution of 'is_norming'
 ggplot(analysis_data, aes(x = is_norming)) +
@@ -114,38 +125,32 @@ analysis_data %>%
   summarize(
     avg_production = mean(production, na.rm = TRUE)) %>%
   ggplot(aes(x = age)) +
-  geom_line(aes(y = avg_production, color = "Production"), linewidth = 1) +
+  geom_line(aes(y = avg_production), linewidth = 1) +
   labs(
     title = "Average Vocabulary Size by Age",
     subtitle = "Tracking production vocabulary growth",
     x = "Age (months)",
-    y = "Average Vocabulary Size",
-    color = "Vocabulary Type") +
-  scale_color_manual(values = c("Production" = "red")) +
+    y = "Average Vocabulary Size") +
   theme_minimal() +
   theme(
     plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
     plot.subtitle = element_text(size = 12, hjust = 0.5, color = "gray"),
     axis.text = element_text(size = 12),
-    axis.title = element_text(size = 14),
-    legend.title = element_text(size = 12),
-    legend.text = element_text(size = 12))
+    axis.title = element_text(size = 14))
 
-# C2. Average Production by Broad Category and Age
+# C2. Average Production by Category and Age
 analysis_data %>%
-  group_by(broad_category, age) %>%
+  group_by(category, age) %>%
   summarize(avg_production = mean(production, na.rm = TRUE), .groups = "drop") %>%
-  ggplot(aes(x = age, y = avg_production, fill = broad_category)) +
+  ggplot(aes(x = age, y = avg_production, fill = category)) +
   geom_col(position = "stack") +  # Use stack for stacked bars
   labs(
-    title = "Average Production by Broad Category and Age",
+    title = "Average Production by Category and Age",
     x = "Age (months)",
     y = "Average Production Score",
-    fill = "Broad Category"
-  ) +
+    fill = "Category") +
   theme_minimal() +
-  theme(
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.5),
+  theme(plot.title = element_text(size = 14, face = "bold", hjust = 0.5),
     axis.text.x = element_text(angle = 45, hjust = 1),
     axis.text = element_text(size = 10),
     axis.title = element_text(size = 12),
@@ -157,21 +162,28 @@ analysis_data %>%
 monthly_summary <- analysis_data %>%
   mutate(month = floor_date(date_of_test, "month")) %>%
   group_by(month) %>%
-  summarize(avg_comprehension = mean(comprehension, na.rm = TRUE),
-    avg_production = mean(production, na.rm = TRUE))
+  summarize(
+    avg_comprehension = mean(comprehension, na.rm = TRUE),
+    avg_production = mean(production, na.rm = TRUE)
+  )
 
-# Plot production trends
+# Plot both comprehension and production trends
 ggplot(monthly_summary, aes(x = month)) +
-  geom_line(aes(y = avg_production, color = "Producted Vocabulary"), size = 1) +
-  labs(title = "Time Trends in Vocabulary Production",
+  geom_line(aes(y = avg_comprehension, color = "Comprehension Vocabulary"), size = 1) +
+  geom_line(aes(y = avg_production, color = "Production Vocabulary"), size = 1, linetype = "dashed") +
+  labs(
+    title = "Time Trends in Vocabulary Comprehension and Production",
     x = "Month",
     y = "Average Vocabulary Size",
-    color = "Vocabulary Type") +
+    color = "Vocabulary Type"
+  ) +
   scale_x_date(date_labels = "%b %Y", date_breaks = "3 months") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "top",
-    plot.title = element_text(size = 14, face = "bold"))
-  
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "top",
+    plot.title = element_text(size = 14, face = "bold")
+  )
 #-------------------------------------------------------------------------------  
 ### Part D: Model data ####
 # D1. Define the Bayesian regression model

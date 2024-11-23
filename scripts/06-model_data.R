@@ -15,12 +15,19 @@ library(rstanarm)
 library(car)
 library(arrow)
 library(rsample)
+library(modelsummary)
 
 #### Read data ####
 analysis_data<- read_parquet("data/02-analysis_data/cleaned_data.parquet")
 
 ### Model data ####
 set.seed(853)
+
+# Check and preprocess data
+analysis_data <- analysis_data %>%
+  mutate(broad_category = factor(broad_category), # Ensure categorical variable is a factor
+    age_scaled = as.numeric(scale(age))     # Standardize numerical predictors
+  )
 
 # Perform a split to get training and testing data
 split <- initial_split(data=analysis_data, prop = 0.8)
@@ -36,20 +43,14 @@ analysis_data_train <- analysis_data_train %>%
   ) %>%
   drop_na(prod_comp_mean)  # Drop rows where prod_comp_mean is NA
 
-# Standardize numerical predictors
-analysis_data_train <- analysis_data_train %>%
-  mutate(age_scaled = scale(age))
-
-analysis_data_train$age_scaled <- as.numeric(analysis_data_train$age_scaled)
-
 # Build the logistic regression model on the training dataset
 logistic_model <- glm(
   high_vocabulary ~ age_scaled + is_norming + broad_category,
   data = analysis_data_train,
-  family = binomial)
+  family = binomial(link = "logit"))
 
 # Print the summary of the model
-summary(logistic_model)
+modelsummary(logistic_model)
 
 #### Save model ####
 write_parquet(analysis_data_test, sink = "data/02-analysis_data/test_data.parquet")

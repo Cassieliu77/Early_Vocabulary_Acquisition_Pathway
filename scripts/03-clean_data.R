@@ -31,7 +31,7 @@ cleaned_data <- cleaned_data %>%
 
 # Filter data to include only rows with date_of_test after 2000-01-01
 cleaned_data <- cleaned_data %>% 
-  filter(date_of_test > as.Date("2000-01-01")) %>% 
+  filter(date_of_test > as.Date("2009-01-01")) %>% 
   filter(production > 100) %>% filter(comprehension > 100)
 
 # Define a mapping of categories to broader groups
