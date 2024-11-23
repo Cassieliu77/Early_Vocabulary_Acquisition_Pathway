@@ -603,8 +603,297 @@ This project greatly benefited from the use of OpenAI's ChatGPT 4.0, which provi
 
 A special acknowledgment goes to the @wordbankr team for providing the extensive dataset that forms the foundation of this research. Their contribution enabled a comprehensive exploration of vocabulary learning patterns in children. We are deeply grateful to the developers and maintainers of these open-source tools and datasets for their efforts in advancing research and accessibility in the data science community.
 
+User
+
+ # Summarize the 'is_norming' variable
+> isnorming <- summary(analysis_data$is_norming)
+> kable(head(isnorming))
+Error in dimnames(x) <- dnx : 'dimnames' applied to non-array
+> #| echo: false
+> #| label: fig-norming
+> #| fig-cap: The dataset is primarily composed of non-norming children, with a smaller subset belonging to the norming group, serving as a standardized benchmark for assessing vocabulary development
+> #| warning: false
+> #| message: false
+> 
+> # Summarize the 'is_norming' variable
+> isnorming <- summary(analysis_data$is_norming)
+> 
+> # Convert the named vector to a data frame
+> isnorming_df <- data.frame(
++   Value = names(isnorming),  # Extract the names (e.g., TRUE, FALSE)
++   Count = as.numeric(isnorming)  # Extract the counts
++ )
+> 
+> # Render with kable
+> kable(isnorming_df)
+
+ChatGPT
+
+It seems your kable command is missing some configurations or is encountering an issue. Here’s how you can fix and properly render your table using kable:
+
+# Summarize the 'is_norming' variable
+isnorming <- summary(analysis_data$is_norming)
+
+# Convert the named vector to a data frame
+isnorming_df <- data.frame(
+  Value = names(isnorming),  # Extract the names (e.g., TRUE, FALSE)
+  Count = as.numeric(isnorming)  # Extract the counts
+)
+
+# Render with kable
+knitr::kable(
+  isnorming_df,
+  col.names = c("Norming Status", "Count"),
+  caption = "Distribution of Norming Status in the Dataset"
+)
+
+Explanation of Components
+
+	1.	summary():
+	•	Summarizes the is_norming variable (e.g., how many TRUE and FALSE values exist).
+	2.	Convert to a data frame:
+	•	names(isnorming) gives the TRUE or FALSE status.
+	•	as.numeric(isnorming) gives the corresponding counts.
+	3.	kable():
+	•	Adds a human-readable table with column headers (Norming Status and Count) and an optional caption.
+
+This approach should work perfectly, and the table will render as expected. If you still encounter any issues, ensure your kable package and knitr are loaded (library(knitr)). Let me know if you need further clarification!
+
+User
+
+processing file: paper.qmd
+  |..................................                 |  67% [fig-prediction]  Error in `parse()`:
+! <text>:21:0: unexpected end of input
+19:     panel.grid.minor = element_blank()
+20: 
+   ^
+Backtrace:
+  1. global .main()
+  2. execute(...)
+  3. rmarkdown::render(...)
+  4. knitr::knit(knit_input, knit_output, envir = envir, quiet = quiet)
+  5. knitr:::process_file(text, output)
+     ...
+ 11. knitr:::eng_r(options)
+ 14. knitr (local) evaluate(...)
+ 15. evaluate::evaluate(...)
+ 17. evaluate:::parse_all.character(...)
+ 18. base::parse(text = x, srcfile = src)
+
+
+
+Quitting from lines 467-493 [fig-prediction] (paper.qmd)
+                                                                                                             
+Execution halted
+
+The error message indicates a problem with your R code in the paper.qmd file, specifically in the chunk labeled [fig-prediction]. The issue is an unexpected end of input, which typically means the code block is incomplete—possibly missing a closing bracket ) or brace }.
+
+Here’s how to debug and resolve this issue:
+
+Steps to Fix:
+
+	1.	Locate the [fig-prediction] Chunk:
+Open your paper.qmd file and find the code chunk labeled [fig-prediction].
+	2.	Check for Missing Braces or Parentheses:
+Carefully review the code within this chunk. Ensure every:
+	•	Opening { has a corresponding }.
+	•	Opening ( has a matching ).
+Example issue:
+
+theme(
+    panel.grid.major = element_line(color = "gray90"),
+    panel.grid.minor = element_blank() # Missing a closing )
+
+
+	3.	Ensure the Chunk is Properly Terminated:
+Make sure the code block ends with three backticks (```) to close it.
+Example of correct chunk:
+
+```{r fig-prediction}
+ggplot(data, aes(x, y)) +
+  geom_line() +
+  theme(
+    panel.grid.major = element_line(color = "gray90"),
+    panel.grid.minor = element_blank()
+  )
+```
+
+
+	4.	Re-run the File:
+After fixing, re-run the paper.qmd file to verify if the issue is resolved.
+
+Common Causes of the Error:
+
+	•	Incomplete code: For instance, a missing + in ggplot chaining or a missing bracket/parenthesis.
+	•	Accidental indentation: If some lines were unintentionally indented or commented out.
+	•	Missing required libraries: Ensure all libraries used in the chunk are loaded.
+
+Let me know if you need help reviewing or editing the problematic [fig-prediction] chunk!
+
+
+ChatGPT
 
 
 
 
+
+User
+
+
+
+
+ChatGPT
+
+User
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+
+User
+
+ChatGPT
+
+User
+
+ChatGPT
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+
+User
+
+ChatGPT
+
+User
+
+ChatGPT
+
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+
+User
+
+ChatGPT
+
+User
+
+ChatGPT
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+
+User
+
+ChatGPT
+
+User
+
+ChatGPT
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+
+User
+
+ChatGPT
+
+User
+
+ChatGPT
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+User
+
+ChatGPT
+
+User
+
+ChatGPT
+
+User
+
+ChatGPT
 
