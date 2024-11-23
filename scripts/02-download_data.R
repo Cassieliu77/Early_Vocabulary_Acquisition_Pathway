@@ -37,6 +37,6 @@ if (!is.null(items)) {
 
 
 #### Save data ####
-# Because the dataset is too large (1.2GB in csv file). Alternatively, save the downloaded data as a Parquet file.
+# Because the dataset is too large. Alternatively, save the downloaded data as a Parquet file.
 write_parquet(x = raw_data, sink = "data/01-raw_data/raw_data.parquet")
 

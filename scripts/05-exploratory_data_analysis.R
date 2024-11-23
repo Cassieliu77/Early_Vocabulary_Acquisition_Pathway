@@ -188,7 +188,7 @@ ggplot(monthly_summary, aes(x = month)) +
 ### Part D: Model data ####
 # D1. Define the Bayesian regression model
 bayesian_model <-stan_glm(
-    formula = production ~ age + category + lexical_category,  # Model formula
+    formula = production ~ age + category + broad_category,  # Model formula
     data = analysis_data,                               # Dataset
     family = gaussian(),                                 # Gaussian distribution for continuous outcome
     prior = normal(location = 0, scale = 2.5, autoscale = TRUE),
@@ -231,15 +231,15 @@ analysis_data <- analysis_data %>%
     prod_comp_mean_scaled = scale(prod_comp_mean)  # Standardize prod_comp_mean
   )
 
-# Collapse `lexical_category` into top 5 most frequent levels and group the rest
+# Collapse `broad_category` into top 5 most frequent levels and group the rest
 analysis_data <- analysis_data %>%
   mutate(
-    lexical_category = fct_lump(lexical_category, n = 5)  # Top 5 frequent categories
+    broad_category = fct_lump(broad_category, n = 5)  # Top 5 frequent categories
   )
 
 # Build the logistic regression model
 logistic_model <- glm(
-  high_comprehension ~ age_scaled + prod_comp_mean_scaled + lexical_category,  # Formula
+  high_comprehension ~ age_scaled + prod_comp_mean_scaled + broad_category,  # Formula
   data = analysis_data,  # Data
   family = binomial,  # Logistic regression
   weights = ifelse(high_comprehension == 1, 10, 1)  # Adjust weights for class imbalance
@@ -253,9 +253,9 @@ summary(logistic_model)
 analysis_data <- analysis_data %>%
   mutate(avg_comp_prod = (comprehension + production) / 2)
 
-# Fit the linear model with age, lexical_category, is_norming as indicator variables
+# Fit the linear model with age, broad_category, is_norming as indicator variables
 linear_model <- lm(
-  avg_comp_prod ~ age + lexical_category + is_norming, data = analysis_data)
+  avg_comp_prod ~ age + broad_category + is_norming, data = analysis_data)
 
 # Print the summary
 summary(linear_model)

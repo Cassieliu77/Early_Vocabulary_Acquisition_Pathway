@@ -25,9 +25,9 @@ set.seed(853)
 
 # Check and preprocess data
 analysis_data <- analysis_data %>%
-  mutate(broad_category = factor(broad_category), # Ensure categorical variable is a factor
-    age_scaled = as.numeric(scale(age))     # Standardize numerical predictors
-  )
+  mutate(
+    age_scaled = as.numeric(scale(age)),  # Standardize age
+    broad_category = factor(broad_category))
 
 # Perform a split to get training and testing data
 split <- initial_split(data=analysis_data, prop = 0.8)

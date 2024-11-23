@@ -217,13 +217,15 @@ To investigate the relationship between children’s vocabulary acquisition and 
 
 ## Logistic Regression Model Overview
 
-- High Vocabulary: The outcome variable, high_vocabulary, is a binary indicator that takes the value of 1 if the average production and comprehension score (prod_comp_mean) exceeds 350 and 0 otherwise. This threshold was selected to represent children with relatively advanced vocabulary skills, determined through exploratory data analysis.
-- Scaled Age (age_scaled): This continuous variable represents the child’s age, standardized to ensure the model coefficients reflect changes per standard deviation in age. Standardization improves numerical stability and aids interpretability.
+- High Vocabulary: A binary indicator where 1 represents a high vocabulary score (combined comprehension and production > 350), and 0 otherwise.
+
+- Scaled Age (age_scaled): The child’s age, standardized to reflect changes per standard deviation. Standardization aids in interpretability and ensures numerical stability.
+
 - Norming Status (is_norming): A binary indicator denoting whether a child is part of the norming dataset (TRUE) or not (FALSE). This variable accounts for potential differences in data collection or assessment protocols.
-- Broad Category (broad_category): A categorical variable grouping words into four broad linguistic categories: nouns, verbs, adjectives, and function_words. The reference category is function_words.
 
+- Broad Category (broad_category): A categorical variable grouping words into lexical categories, such as adjectives, verbs, and nouns. The reference category for comparison is Function Words.
 
-The model takes the form:
+The model is specified as:
 
 \begin{align}
 \log \left( \frac{p_i}{1 - p_i} \right) &= \beta_0 + \beta_1 \cdot \text{age\_scaled}_i + \beta_2 \cdot \text{is\_normingTRUE}_i \\
@@ -237,7 +239,7 @@ The model takes the form:
 \end{align}
 
 Where:
-- $p_i$ represents the probability that person i has a high vocabulary
+- $p_i$ represents the probability that child  i  has a high vocabulary score.
 - $\beta_0$ is the intercept, capturing the baseline log-odds when all predictors are at their reference or mean levels
 - $\beta_1$: Effect of age (standardized)
 - $\beta_2$: The effect of whether the individual belongs to the norming group
@@ -262,13 +264,16 @@ The logistic regression coefficient ($\beta$) represents the change in the log-o
 
 ## Model Justification
 
-The model was trained on 80% of the dataset, with the remaining 20% reserved for testing. Model performance was assessed using confusion matrices and overall accuracy. Further evaluation included the analysis of residual deviance, AIC, and interpretation of individual coefficients.
+The model was trained using robust statistical principles to ensure reliability:
 
+	•	The split of data into training and testing subsets facilitates evaluation of the model’s predictive power on unseen data.
+	•	Standardizing continuous predictors such as age improves interpretability and comparability across variables.
+	•	Saving preprocessed datasets and the trained model ensures reproducibility and traceability of results.
 
 
 # Results
 
-## Average Production by Broad Category and Age
+## Average Production by Broad Category
 
 @fig-average shows..
 
@@ -280,25 +285,41 @@ The model was trained on 80% of the dataset, with the remaining 20% reserved for
 #| warning: false
 #| message: false
 
-analysis_data %>%
-  group_by(broad_category, age) %>%
-  summarize(avg_production = mean(production, na.rm = TRUE), .groups = "drop") %>%
-  ggplot(aes(x = age, y = avg_production, fill = broad_category)) +
-  geom_col(position = "stack") +  # Use stack for stacked bars
+# Filter the dataset for Adjectives and Objects
+filtered_data <- analysis_data %>%
+  filter(broad_category %in% c("Adjectives", "Objects"))
+
+# Select 100 random unique child IDs
+set.seed(123)  # Ensure reproducibility
+sampled_child_ids <- filtered_data %>%
+  distinct(child_id) %>%
+  slice_sample(n = 100) %>%
+  pull(child_id)
+
+# Filter data for these 100 children
+filtered_data_sampled <- filtered_data %>%
+  filter(child_id %in% sampled_child_ids)
+
+# Create a line plot for each child's production trend
+ggplot(filtered_data_sampled, aes(x = age, y = production, color = as.factor(child_id), group = child_id)) +
+  geom_line(alpha = 0.8, size = 1) +  # Line for each child
+  facet_wrap(~ broad_category, scales = "free_y") +  # Separate facets for Adjectives and Objects
   labs(
-    title = "Average Production by Broad Category and Age",
-    x = "Age (months)",
-    y = "Average Production Score",
-    fill = "Broad Category"
+    title = "Production Trends by Child Across Categories (Sampled 100 Children)",
+    subtitle = "Adjectives and Objects",
+    x = "Age (Months)",
+    y = "Production Score",
+    color = "Child ID"
   ) +
   theme_minimal() +
   theme(
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.5),
-    axis.text.x = element_text(angle = 45, hjust = 1),
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(size = 12, hjust = 0.5),
     axis.text = element_text(size = 10),
-    axis.title = element_text(size = 12),
-    legend.text = element_text(size = 10),
-    legend.title = element_text(size = 11))
+    axis.title = element_text(size = 14),
+    legend.position = "none",  # Hide legend to avoid clutter
+    strip.text = element_text(size = 12, face = "bold")  # Customize facet labels
+  )
 ```
 
 ## Prediciton for the Probability of High Vocabulary Level
@@ -440,21 +461,66 @@ modelsummary(logistic_model)
 ```
 
 
-
-
 ## Diagnostics
+
+
+```{r}
+library(ggplot2)
+
+# Add predicted probabilities and logit to the dataset
+analysis_data_train <- analysis_data_train %>%
+  mutate(predicted_prob = predict(logistic_model, type = "response"),
+         logit = log(predicted_prob / (1 - predicted_prob)))
+
+# Plot logit against continuous variables (e.g., age_scaled)
+ggplot(analysis_data_train, aes(x = age_scaled, y = logit)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "loess", se = TRUE, color = "blue") +
+  labs(title = "Logit vs. Age (Scaled)",
+       x = "Age (Scaled)",
+       y = "Logit (log-odds)") +
+  theme_minimal()
+```
+
+### Accuracy
+```{r}
+# Predicted probabilities and classes
+predicted_classes <- ifelse(fitted(logistic_model) > 0.5, 1, 0)
+confusion_matrix <- table(Predicted = predicted_classes, Actual = analysis_data_train$high_vocabulary)
+
+# Print confusion matrix and accuracy
+print(confusion_matrix)
+accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
+print(paste("Accuracy:", round(accuracy, 3)))
+```
+
 
 ```{r}
 #| echo: false
 #| eval: true
 #| message: false
 #| warning: false
-#| label: fig-stanareyouokay
-#| fig-cap: Checking the convergence of the MCMC algorithm
+#| label: fig-convergencecheck
+#| fig-cap: "Checking the convergence of the Markov chain Monte Carlo (MCMC) algorithm for hit song model"
+#| fig-subcap: ["Trace plot for model", "Rhat plot for model"]
+#| layout-ncol: 2
 
+# Creates trace plot
+plot(predicted_prob, "trace") + theme_minimal()
+# Creates rhat plot
+plot(predicted_prob, "rhat") + theme_minimal()
 
 ```
 
+### Binned Residual Plot
+```{r}
+install.packages("arm")
+library(arm)
+
+binnedplot(fitted(logistic_model), residuals(logistic_model, type = "response"),
+           xlab = "Fitted Probabilities", ylab = "Average Residual",
+           main = "Binned Residual Plot")
+```
 
 \newpage
 

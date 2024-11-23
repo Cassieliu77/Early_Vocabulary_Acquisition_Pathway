@@ -31,8 +31,8 @@ test_that("dataset has the expected number of rows", {
 })
 
 # Test 2: Test if the dataset has the correct number of columns
-test_that("dataset has 14 columns", {
-  expect_equal(ncol(analysis_data), 14)
+test_that("dataset has 15 columns", {
+  expect_equal(ncol(analysis_data), 15)
 })
 
 # Test 3: Test if the 'language' column contains only valid languages
@@ -65,13 +65,13 @@ test_that("'age' values are between 16 and 60", {
 })
 
 # Test 7: Test if 'comprehension' falls within a valid range
-test_that("'comprehension' values are between 100 and 1000", {
-  expect_true(all(analysis_data$comprehension >= 100 & analysis_data$comprehension <= 1000))
+test_that("'comprehension' values are between 0 and 1000", {
+  expect_true(all(analysis_data$comprehension >= 0 & analysis_data$comprehension <= 1000))
 })
 
 # Test 8: Test if 'production' falls within a valid range
-test_that("'production' values are between 100 and 1000", {
-  expect_true(all(analysis_data$production >= 100 & analysis_data$production <= 1000))
+test_that("'production' values are between 0 and 1000", {
+  expect_true(all(analysis_data$production >= 0 & analysis_data$production <= 1000))
 })
 
 # Test 9: Test if 'date_of_test' is within a valid range
@@ -80,9 +80,10 @@ test_that("'date_of_test' is after the year 2000", {
                     analysis_data$date_of_test <= as.Date("2024-11-20")))
 })
 
-# Test 10: Test if item_id values are unique for each data_id
-test_that("item_id values are unique for each data_id", {
-  expect_true(all(!duplicated(analysis_data[, c("data_id", "item_id")])))
+# Test 10: Test if 'child_id' is consistent with its  'data_id'
+test_that("child_id is consistent within each data_id", {
+  expect_true(all(tapply(analysis_data$child_id, analysis_data$data_id, 
+                         function(x) length(unique(x)) == 1)))
 })
 
 # Test 11: Test if comprehension is greater than or equal to production
@@ -102,7 +103,8 @@ test_that("'date_of_test' contains no future dates", {
 
 # Test 14: Test if broad_category contains the valid type categories
 test_that("'broad_category' column is valid", {
-  valid_broad_categories <- c("verbs", "function_words", "nouns", "adjectives")
+  valid_broad_categories <- c("Sensory Words", "Living Things", "Objects", "Places"
+                              ,"Activities", "Verbs", "Adjectives", "Function Words")
   expect_true(all(analysis_data$broad_category %in% valid_broad_categories), 
               info = "Broad category contains invalid values")
 })
@@ -110,7 +112,6 @@ test_that("'broad_category' column is valid", {
 # Test 15: Test if column types match expectations
 test_that("Column types are correct", {
   expect_is(analysis_data$data_id, "numeric")
-  expect_is(analysis_data$item_id, "character")
   expect_is(analysis_data$language, "character")
   expect_is(analysis_data$form, "character")
   expect_is(analysis_data$item_kind, "character")

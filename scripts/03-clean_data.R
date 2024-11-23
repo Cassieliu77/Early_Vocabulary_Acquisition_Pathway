@@ -20,7 +20,7 @@ library(arrow)
 raw_data <- read_parquet("data/01-raw_data/raw_data.parquet")
 
 # Select the needed columns
-cleaned_data <- raw_data %>% select(data_id, language, form, item_kind, 
+cleaned_data <- raw_data %>% dplyr::select(data_id, language, form, item_kind, 
                                  category, uni_lemma, date_of_test,
                                  age, comprehension, production, 
                                  is_norming, child_id)
@@ -29,10 +29,9 @@ cleaned_data <- raw_data %>% select(data_id, language, form, item_kind,
 cleaned_data <- cleaned_data %>%
   mutate(date_of_test = as.Date(date_of_test))
 
-# Filter data to include only rows with date_of_test after 2000-01-01
+# From EDA, observing the lack of data between 2004-2009, filter data to include only observations with date_of_test after 2009-01-01
 cleaned_data <- cleaned_data %>% 
-  filter(date_of_test > as.Date("2009-01-01")) %>% 
-  filter(production > 100) %>% filter(comprehension > 100)
+  filter(date_of_test > as.Date("2009-01-01"))
 
 # Define a mapping of categories to broader groups
 cleaned_data <- cleaned_data %>%
@@ -50,10 +49,12 @@ cleaned_data <- cleaned_data %>%
 
 # Combine production and comprehension into a new variable
 cleaned_data <- cleaned_data %>%
-  mutate(prod_comp_mean = (production + comprehension)/2,  # Average of production and comprehension
-         high_vocabulary = ifelse(prod_comp_mean > 350, 1, 0)  # Binary target variable
-  ) %>%
+  mutate(prod_comp_mean = (production + comprehension)/2) %>%
   drop_na(prod_comp_mean) 
+
+# Create the high_vocabulary variable based on prod_comp_mean
+cleaned_data <- cleaned_data %>%
+  mutate(high_vocabulary = ifelse(prod_comp_mean > 350, 1, 0))
 
 # Omit rows with NA values
 cleaned_data <- cleaned_data %>% 
