@@ -54,7 +54,7 @@ cleaned_data <- cleaned_data %>%
 
 # Create the high_vocabulary variable based on prod_comp_mean
 cleaned_data <- cleaned_data %>%
-  mutate(high_vocabulary = ifelse(prod_comp_mean > 350, 1, 0))
+  mutate(high_vocabulary = ifelse(prod_comp_mean > 300, 1, 0))
 
 # Omit rows with NA values
 cleaned_data <- cleaned_data %>% 

@@ -39,7 +39,7 @@ analysis_data_test <- testing(split)
 # Combine production and comprehension into a new variable
 analysis_data_train <- analysis_data_train %>%
   mutate(prod_comp_mean = (production + comprehension)/2,  # Average of production and comprehension
-    high_vocabulary = ifelse(prod_comp_mean > 350, 1, 0)  # Binary target variable
+    high_vocabulary = ifelse(prod_comp_mean > 300, 1, 0)  # Binary target variable
   ) %>%
   drop_na(prod_comp_mean)  # Drop rows where prod_comp_mean is NA
 

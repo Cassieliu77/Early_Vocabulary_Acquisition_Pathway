@@ -1,6 +1,6 @@
 ---
-title: "Children English Vocabulary Learning Pattern"
-subtitle: "My subtitle if needed"
+title: "Exploring Vocabulary Acquisition in Children"
+subtitle: "Predicted Vocabulary Growth in Children: Higher Probabilities for Common Words and Greater Variability in Complex Categories"
 author: Yongqi Liu
 thanks: "Code and data are available at: https://github.com/Cassieliu77/Vocabulary_Learning_Pattern.git"
 date: today
@@ -18,7 +18,10 @@ bibliography: references.bib
 #| warning: false
 #| message: false
 
-#install.packages("arm")
+# List of required packages
+# packages <- c("tidyverse", "arrow", "modelsummary", "knitr", "dplyr", 
+#            "ggplot2", "scales", "wordbankr", "tidyr", "arm")
+
 library(tidyverse)
 library(arrow)
 library(modelsummary)
@@ -37,24 +40,16 @@ logistic_model <- readRDS(here::here("models/logistic_model_last.rds"))
 
 
 # Introduction
+Understanding how children acquire vocabulary is a cornerstone of developmental linguistics and early childhood education. Vocabulary growth is not only a key indicator of cognitive development but also serves as a foundation for future linguistic and academic success. The interplay of factors such as age, linguistic environments, and word categories influences children’s vocabulary acquisition in complex and dynamic ways. By analyzing patterns and predictors of vocabulary growth, researchers can uncover insights into the developmental trajectories that shape language learning.
 
-Overview paragraph
+This study leverages a dataset derived from the Wordbank database, which compiles data from the MacArthur-Bates Communicative Development Inventories (CDI), to examine vocabulary development in children aged 16–30 months. A logistic regression model was employed to predict the likelihood of achieving a high vocabulary score based on variables such as age, norming status, and lexical categories. The model provides a framework for exploring how these predictors interact to shape children’s vocabulary acquisition.
 
-Estimand paragraph
+Key findings from this analysis reveal that vocabulary acquisition follows distinct trajectories across different word categories, with age being the strongest predictor of vocabulary growth. Furthermore, categories such as “Living Things” and “Function Words” show consistent acquisition patterns, while others, like “Sensory Words,” exhibit greater variability. These results contribute to a deeper understanding of the linguistic milestones that mark early childhood and highlight areas for further exploration in language development research.
 
-Results paragraph
-
-Why it matters paragraph
-
-The remainder of this paper is structured as follows. @sec-data descirbe the dataset in detail, and shows the distribution of variables. The data used in this study comes from @wordbankr, and the whole paper is conducted and analyzed in @citeR
+The remainder of this paper is structured as follows: @sec-data1 describes the dataset, highlighting the variables used and their distributions. @sec-model1 provides an overview of the logistic regression model and its assumptions. @sec-result presents the results, including variability in vocabulary acquisition, the role of predictors, and predicted probabilities. Finally, @sec-discussion discusses the implications of the findings and outlines limitations and directions for future research. The data used in this study all comes from @wordbankr, and the whole paper is conducted and analyzed in @citeR.
 
 
-
-
-
-
-
-# Data {#sec-data}
+# Data {#sec-data1}
 
 ## Overview
 
@@ -113,11 +108,11 @@ The outcome variable in this study, High Vocabulary Score, is a binary indicator
 
 3. The High Vocabulary Score is calculated using the average of comprehension and production scores for each individual. This average is represented as: $\text{prod\_comp\_mean} = \frac{\text{Comprehension} + \text{Production}}{2}$
 
-To classify individuals, a threshold value of 350 is applied to `prod_comp_mean`:
-- Individuals with `prod_comp_mean > 350` are classified as having a high vocabulary score (outcome = 1).
-- Those with `prod_comp_mean <= 350` are classified as not having a high vocabulary score (outcome = 0).
+To classify individuals, a threshold value of 300 is applied to `prod_comp_mean`:
+- Individuals with `prod_comp_mean > 300` are classified as having a high vocabulary score (outcome = 1).
+- Those with `prod_comp_mean <= 300` are classified as not having a high vocabulary score (outcome = 0).
 
-This approach ensures that both receptive (comprehension) and expressive (production) skills are considered in defining advanced vocabulary. The threshold of 350 was chosen based on exploratory analysis of the dataset, reflecting a meaningful distinction between individuals with high and low vocabulary abilities. The High Vocabulary Score serves as the dependent variable in the following data analysis part. Its binary nature makes it suitable for modeling with a binomial family distribution, allowing for the estimation of factors that influence advanced vocabulary acquisition.
+This approach ensures that both receptive (comprehension) and expressive (production) skills are considered in defining advanced vocabulary. The threshold of 300 was chosen based on exploratory analysis of the dataset, reflecting a meaningful distinction between individuals with high and low vocabulary abilities. The High Vocabulary Score serves as the dependent variable in the following data analysis part. Its binary nature makes it suitable for modeling with a binomial family distribution, allowing for the estimation of factors that influence advanced vocabulary acquisition.
 
 ```{r}
 #| label: fig-outcome
@@ -196,14 +191,17 @@ ggplot(analysis_data, aes(x = broad_category)) +
 
 ### Norming Status
 
-Norming status categorizes children into two groups: those included in the norming group and those who are not. The norming group represents a standardized sample used as a benchmark for assessing vocabulary development, providing a reference point for evaluating other children in the dataset. This distinction is important for ensuring the validity and reliability of comparisons in the analysis.
+The is_norming variable categorizes children into two groups: the norming group and the non-norming group. The norming group serves as a standardized sample, providing a benchmark for assessing vocabulary development and enabling reliable comparisons across the dataset. This group is essential for ensuring the validity of the analysis by offering a consistent reference point for evaluating individual and group-level differences in vocabulary acquisition.
 
-The bar plot illustrates the distribution of children based on their norming status. The dataset is predominantly composed of non-norming children, with only a small fraction representing the norming group. This imbalance reflects the practical challenges of including a broad and representative norming sample in large-scale vocabulary assessments. While the non-norming group provides diverse data for analysis, the norming group offers a crucial baseline for calibrating and interpreting the results. The distribution highlights the need to account for this imbalance in the analysis to avoid potential biases and ensure robust conclusions.
+The dataset is predominantly composed of non-norming children, with only a small proportion belonging to the norming group. This imbalance reflects the inherent challenges of including a sufficiently broad and representative norming sample in large-scale assessments. While the non-norming group captures diverse linguistic and demographic contexts, the norming group remains vital for calibrating and interpreting vocabulary development patterns, particularly in early language acquisition studies. @tbl-norming illustrates this distribution, highlighting the predominance of non-norming children in the dataset.
+
+The is_norming variable is included in the logistic regression model to account for potential systematic differences between the norming and non-norming groups. As the norming group represents a standardized sample used as a benchmark for vocabulary development, its inclusion ensures that variations in the likelihood of achieving a high vocabulary score are not confounded by differences in group composition or assessment protocols. It allows the model to estimate whether membership in the norming group significantly influences vocabulary acquisition outcomes. This is particularly important given the inherent imbalance in the dataset, where the non-norming group constitutes the majority. By controlling for is_norming, the model can differentiate between developmental patterns attributable to broader population diversity versus those arising from the structured selection of the norming sample.
+
 
 ```{r}
 #| echo: false
-#| label: fig-norming
-#| fig-cap: The dataset is primarily composed of non-norming children, with a smaller subset belonging to the norming group, serving as a standardized benchmark for assessing vocabulary development
+#| label: tbl-norming
+#| tbl-cap: The dataset is primarily composed of non-norming children, with a smaller subset belonging to the norming group, serving as a standardized benchmark for assessing vocabulary development
 #| warning: false
 #| message: false
 
@@ -217,21 +215,20 @@ summary_isnorming_df <- as.data.frame(summary_isnorming)
 # Render the summary table using kable
 knitr::kable(
   summary_isnorming_df,
-  col.names = c("Norming Status", "Count"),  # Set column names
-  caption = "Summary of Norming Status in the Dataset"
-)
+  col.names = c("Norming Status", "Count"),  
+  caption = "Summary of Norming Status in the Dataset")
 ```
 
 
-# Model
+# Model {#sec-model1}
 
 ## Model Selection
 
-To investigate the relationship between children’s vocabulary acquisition and their demographic and linguistic characteristics, we constructed a logistic regression model. By examining key demographic and linguistic predictors, we aim to identify how characteristics like age, norming status, and word categories influence vocabulary development. The dependent variable, high_vocabulary, is a binary outcome indicating whether a child’s average production and comprehension score (denoted as prod_comp_mean) exceeds 350. This threshold was chosen to distinguish children with relatively advanced vocabulary levels. More background details and diagnostics are included in [Appendix-@sec-model].
+To investigate the relationship between children’s vocabulary acquisition and their demographic and linguistic characteristics, we constructed a logistic regression model. By examining key demographic and linguistic predictors, we aim to identify how characteristics like age, norming status, and word categories influence vocabulary development. The dependent variable, high_vocabulary, is a binary outcome indicating whether a child’s average production and comprehension score (denoted as prod_comp_mean) exceeds 300. This threshold was chosen to distinguish children with relatively advanced vocabulary levels. More background details and diagnostics are included in [Appendix-@sec-model2].
 
 ## Logistic Regression Model Overview
 
-- High Vocabulary: A binary indicator where 1 represents a high vocabulary score (combined comprehension and production > 350), and 0 otherwise.
+- High Vocabulary: A binary indicator where 1 represents a high vocabulary score (combined comprehension and production > 300), and 0 otherwise.
 
 - Scaled Age (age_scaled): The child’s age, standardized to reflect changes per standard deviation. Standardization aids in interpretability and ensures numerical stability.
 
@@ -261,9 +258,11 @@ Where:
 
 ## Model Assumptions
 
-- Linearity of the Logit: The model assumes a linear relationship between the log-odds of the outcome (high vocabulary) and the independent variables. For example, the standardized age variable (age_scaled) assumes that for every one standard deviation increase in age, the log-odds of achieving a high vocabulary score increase by a constant amount. Standardizing age ensures that the variable is centered and scaled, making it easier to meet this linearity assumption and interpret its effect across the dataset.
-- Independent Observations: The model assumes that all data points are independent. This assumption holds because each observation represents data from a unique child, with no repeated measurements for the same individual. For instance, there are no longitudinal observations or nested data structures (e.g., children grouped by classrooms or schools) that could violate independence. If dependence were present, a more complex model like a mixed-effects logistic regression would be necessary.
-- Categorical Variable Encoding: The broad_category variable, which includes categories such as “Adjectives,” “Verbs,” and “Living Things,” was encoded using sum contrasts. This approach ensures that the coefficients for each category represent the deviation of that category’s effect from the overall mean effect across all categories. For example, the coefficient for “Verbs” indicates how the log odds of achieving a high vocabulary differ for “Verbs” compared to the average effect of all other categories. Sum contrasts are particularly useful for understanding relative effects and ensure that the intercept reflects the overall mean effect when all predictors are at their reference or average levels.
+- Linearity of the Logit: The model assumes a linear relationship between the log-odds of the outcome (high vocabulary) and the independent variables. For example, the standardized age variable (age_scaled) reflects that for every one standard deviation increase in age, the log-odds of achieving a high vocabulary score change by a constant amount. Standardizing age ensures that the variable is centered around zero and scaled to have a standard deviation of one, which not only aids interpretability but also supports the linearity assumption across the dataset.
+- Independence of Observations: Each observation in the dataset is assumed to be independent. This assumption holds because each data point corresponds to a unique child, with no repeated measures or nested structures, such as clustering by classrooms or schools. If there were dependencies (e.g., repeated measures for the same child or hierarchical data), a mixed-effects logistic regression or another hierarchical model would be required to account for these correlations.
+- Categorical Variable Encoding: The broad_category variable, which classifies words into categories such as “Adjectives,” “Verbs,” and “Living Things,” is encoded using sum contrasts. This encoding ensures that the coefficients for each category represent its deviation from the overall mean effect across all categories. For example, the coefficient for “Verbs” reflects the difference in log-odds of achieving a high vocabulary score for words in the “Verbs” category compared to the average log-odds across all categories. Using sum contrasts ensures that the model’s intercept represents the overall mean effect when all predictors are at their reference or average levels, facilitating meaningful interpretation of the model coefficients.
+- Binary Nature of the Outcome: The dependent variable, high_vocabulary, is binary (1 = high vocabulary, 0 = not high vocabulary). Logistic regression is specifically designed for binary outcomes, and the binomial distribution of the data supports the appropriateness of the logistic framework.
+-No Perfect Multicollinearity: The model assumes that the predictors are not perfectly correlated with one another. High multicollinearity could distort coefficient estimates, making it difficult to interpret the unique contribution of each variable. Steps such as standardizing continuous predictors and carefully encoding categorical variables mitigate this risk.
 
 ## Interpretation of Coefficients
 
@@ -289,7 +288,7 @@ The dataset was split into training and testing subsets to ensure model validati
 To ensure reproducibility, the preprocessed datasets and the trained model were saved. This practice facilitates verification of results and supports future analyses or extensions of the study. Overall, the logistic regression model offers a clear and interpretable framework for investigating vocabulary acquisition patterns, providing both explanatory power and practical insights.
 
 
-# Results
+# Results {#sec-result}
 
 ## Variability in Production Vocabulary
 
@@ -353,7 +352,7 @@ ggplot() +
 
 ```
 
-## Vocabulary Size Change by Age
+## Median Vocabulary Size Change by Age
 
 @fig-median illustrates the median comprehension vocabulary scores across different ages, focusing on the central tendency of children’s comprehension development between 15 and 30 months. The gray dots represent individual data points, capturing the variability in comprehension scores, while the blue line highlights the median score for each age group. The graph shows a clear upward trajectory, with median comprehension steadily increasing with age, particularly after 18 months. This suggests a critical developmental period between 18 and 30 months during which children experience significant growth in comprehension vocabulary. The density and spread of gray points around the median line indicate individual variability, emphasizing that while the general trend is one of growth, some children exhibit slower or faster development compared to their peers. The visualization underscores the importance of age as a determinant of vocabulary comprehension while highlighting the diverse range of learning patterns among children.
 
@@ -366,14 +365,19 @@ The use of the median instead of the mean ensures that the central trend is not 
 #| echo: false
 #| eval: true
 #| label: fig-median
-#| fig-cap: "Illustrating central tendencies in comprehension vocabulary scores"
+#| fig-cap: Illustrating central tendencies in comprehension vocabulary scores based on resampled data
 #| warning: false
 #| message: false
 
-analysis_data_1<- read_parquet(here::here("data/02-analysis_data/cleaned_data.parquet"))
+analysis_data_1 <- read_parquet(here::here("data/02-analysis_data/cleaned_data.parquet"))
 
-# Calculate the median comprehension for each age
-median_data <- analysis_data_1 %>%
+# Resample the dataset to include 100 observations
+set.seed(666)  # For reproducibility
+sampled_data <-  analysis_data_1 %>%
+  sample_n(800)
+
+# Calculate the median comprehension for each age in the sampled dataset
+median_data <- sampled_data %>%
   group_by(age) %>%
   summarize(
     median_prod_comp_mean = median(prod_comp_mean, na.rm = TRUE), 
@@ -381,21 +385,23 @@ median_data <- analysis_data_1 %>%
 
 # Create a scatter plot with median comprehension by age
 ggplot() +
-  geom_jitter(data = analysis_data_1, aes(x = age, y = prod_comp_mean), 
-              alpha = 0.2, size = 1, color = "orange") +  # Scatter points for individual data
+  geom_jitter(data = sampled_data, aes(x = age, y = prod_comp_mean), 
+              alpha = 0.7, size = 2, color = "orange") +  # Scatter points for sampled data
   geom_line(data = median_data, aes(x = age, y = median_prod_comp_mean), 
-            color = "blue", size = 1.5, linetype = "solid") +  # Line for median comprehension
+            color = "blue", size = 1.2, linetype = "solid") +  # Line for median comprehension
   labs(
-    title = "Median Comprehension Vocabulary by Age", x = "Age (Months)",
+    title = "Median Comprehension Vocabulary by Age (Resampled)", 
+    x = "Age (Months)",
     y = "Median of the Vocabulary Level") +
   theme_minimal(base_size = 14) +
-  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(size = 12, hjust = 0.5),
+  theme(
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.5),
     axis.title = element_text(size = 12),
     axis.text = element_text(size = 12),
     panel.grid.major = element_line(color = "grey85"),
-    panel.grid.minor = element_blank()) +
-  scale_x_continuous(breaks = seq(15, 30, 3))  
+    panel.grid.minor = element_blank()
+  ) +
+  scale_x_continuous(breaks = seq(15, 30, 3))
 ```
 
 ## Prediciton for the Probability of High Vocabulary Level
@@ -403,15 +409,221 @@ ggplot() +
 ```{r}
 #| echo: false
 #| eval: true
+#| label: fig-goodgood
+#| fig-cap: How the probability of high vocabulary varies with age by aggregating the predictions for each age group
 #| warning: false
 #| message: false
 
+# Add predicted probabilities to the test dataset
+analysis_data_test<- read_parquet(here::here("data/02-analysis_data/test_data.parquet"))
+analysis_data_test <- analysis_data_test %>% mutate(predicted_prob = predict(logistic_model, newdata = analysis_data_test, type = "response"))
+
+# Aggregate mean predicted probabilities by age and broad_category
+age_broad_category_predictions <- analysis_data_test %>%
+  group_by(age, broad_category, is_norming) %>%
+  summarize(mean_predicted_prob = mean(predicted_prob, na.rm = TRUE), .groups = "drop")
+
+broad_category_summary <- age_broad_category_predictions %>%
+  group_by(broad_category) %>%
+  summarize(overall_mean_prob = mean(mean_predicted_prob, na.rm = TRUE))
+
+norming_category_summary <- age_broad_category_predictions %>%
+  group_by(is_norming) %>%
+  summarize(overall_mean_prob = mean(mean_predicted_prob, na.rm = TRUE))
+
+age_broad_category_predictions
+norming_category_summary
+```
+
+## Predicted Probabilities by Age
+
+@fig-agepercent illustrates the relationship between predicted probabilities of achieving high vocabulary and age, with percentile trends (10th, 25th, 50th, 75th, and 90th percentiles) overlaid to highlight the variability in predictions. The scatterplot points represent individual predicted probabilities, while the percentile lines depict the progression of predictions across age groups.
+
+The median predicted probability (50th percentile, solid blue line) steadily increases with age, reflecting the model’s growing confidence in high vocabulary acquisition as children get older. The 10th and 25th percentiles (dashed and dotted red/purple lines) remain relatively low at younger ages but show a notable rise after 20 months, suggesting greater variability in predictions among younger children. In contrast, the 75th and 90th percentiles (dashed and dotted purple/red lines) start higher and climb more sharply, indicating that some children exhibit advanced vocabulary skills even at younger ages.
+
+Overall, the increasing spread between the percentile lines with age highlights a broader range of vocabulary acquisition patterns as children develop. This visualization underscores the model’s ability to account for individual differences in learning trajectories while confirming the strong association between age and predicted probability of high vocabulary.
+
+```{r}
+#| echo: false
+#| eval: true
+#| label: fig-agepercent
+#| warning: false
+
+# Resample the dataset to include 800 observations
+set.seed(666)  # For reproducibility
+sampled_data_test <- analysis_data_test %>%
+  sample_n(3000)
+
+# Define age ranges
+sampled_data_test <- sampled_data_test %>%
+  mutate(age_range = cut(age, breaks = seq(min(age), max(age), by = 3), include.lowest = TRUE, right = FALSE))
+
+# Calculate percentiles for each age range
+percentile_data <- sampled_data_test %>%
+  group_by(age_range) %>%
+  summarize(
+    p10 = quantile(predicted_prob, 0.10, na.rm = TRUE),
+    p25 = quantile(predicted_prob, 0.25, na.rm = TRUE),
+    p50 = quantile(predicted_prob, 0.50, na.rm = TRUE),  # Median
+    p75 = quantile(predicted_prob, 0.75, na.rm = TRUE),
+    p90 = quantile(predicted_prob, 0.90, na.rm = TRUE),
+    age_mid = mean(as.numeric(as.character(age)), na.rm = TRUE), # Midpoint of age range
+    .groups = "drop"
+  )
+
+# Create the scatterplot with percentile lines
+ggplot(sampled_data_test, aes(x = age, y = predicted_prob)) +
+  # Scatterplot of individual predictions
+  geom_point(alpha = 0.5, size = 2, color = "#FF9933") +
+  # Percentile lines
+  geom_line(data = percentile_data, aes(x = age_mid, y = p10), 
+            color = "#FF6666", linetype = "dashed", size = 1.2, show.legend = TRUE) +  # 10th percentile
+  geom_line(data = percentile_data, aes(x = age_mid, y = p25), 
+            color = "#CC66FF", linetype = "dotted", size = 1.2) +  # 25th percentile
+  geom_line(data = percentile_data, aes(x = age_mid, y = p50), 
+            color = "#3399FF", linetype = "solid", size = 1.5) +  # 50th percentile (Median)
+  geom_line(data = percentile_data, aes(x = age_mid, y = p75), 
+            color = "#CC66FF", linetype = "dotted", size = 1.2) +  # 75th percentile
+  geom_line(data = percentile_data, aes(x = age_mid, y = p90), 
+            color = "#FF6666", linetype = "dashed", size = 1.2) +  # 90th percentile
+  # Add labels and theme
+  labs(
+    title = "Predicted Probabilities by Age with Percentiles", 
+    x = "Age (Months)",
+    y = "Predicted Probability",
+    caption = "Percentile lines show 10th, 25th, 50th, 75th, and 90th percentiles."
+  ) +
+  scale_x_continuous(
+    breaks = seq(min(sampled_data_test$age), max(sampled_data_test$age), by = 3),
+    labels = function(x) paste(x, "mo")  # Add "mo" for months
+  ) +
+  scale_y_continuous(
+    limits = c(0, 1), breaks = seq(0, 1, 0.1),
+    labels = scales::percent_format()  # Format as percentages
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(size = 18, face = "bold", hjust = 0.5),
+    plot.caption = element_text(size = 10, hjust = 0.5, face = "italic"),
+    axis.title = element_text(size = 14, face = "bold"),
+    axis.text = element_text(size = 12),
+    panel.grid.major = element_line(color = "grey85"),
+    panel.grid.minor = element_blank()) +
+  annotate("segment", x = max(sampled_data_test$age) - 4, xend = max(sampled_data_test$age) - 2, y = 0.9, yend = 0.9, 
+           color = "#FF6666", linetype = "dashed", size = 1.2)
+```
+
+
+## Distribution of Predicted Probabilities by Category
+
+The distribution of predicted probabilities for achieving high vocabulary varies across word categories, as shown in @fig-prediction. Categories such as Function Words, Living Things, and Objects demonstrate a concentration of predicted probabilities closer to 0.5 or above, indicating the model’s moderate to high confidence in associating these categories with vocabulary acquisition. These categories likely reflect simpler or more frequently used words that children acquire earlier. In contrast, categories like Sensory Words and Verbs exhibit a higher density of lower predicted probabilities, suggesting that these words are more challenging for children to acquire or are less common in early vocabularies.
+
+Some categories, such as Adjectives and Places, display broader distributions of predicted probabilities, spanning from low to high values. This variability may reflect differences in children’s exposure to or use of these word types, as well as greater heterogeneity in language environments. Overall, these findings provide insights into how the model predicts vocabulary acquisition and highlight the influence of word category. Categories with more focused distributions (e.g., Function Words) suggest consistent acquisition patterns, while those with broader spreads (e.g., Verbs) point to areas where model predictions are less certain and could benefit from further refinement.
+
+
+```{r, width = 10,height=10 }
+#| echo: false
+#| eval: true
+#| label: fig-prediction
+#| fig-cap: This density plot illustrates the predicted probabilities of having a high vocabulary across different broad lexical categories. Each curve represents the density of predicted probabilities within a category, showcasing the variation in predicted outcomes for categories such as Activities, Adjectives, Function Words, Living Things, Objects, Places, Sensory Words, and Verbs. The plot highlights overlapping patterns and areas of divergence in vocabulary acquisition likelihood across different types of words.
+#| warning: false
+
+ggplot(analysis_data_test, aes(x = predicted_prob, fill = broad_category)) +
+  geom_density(alpha = 0.7, color = "black", size = 0.3) +  # Smooth lines for density plots
+  facet_wrap(~ broad_category, scales = "fixed", ncol = 3) +  # Arrange facets in 3 columns
+  labs(
+    title = "Distribution of Predicted Probabilities by Category",
+    x = "Predicted Probability",
+    y = "Density"
+  ) +
+  scale_fill_brewer(palette = "Set3") +  # Use a more vibrant color palette
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 13),
+    axis.title = element_text(size = 14, face = "bold"),
+    axis.text = element_text(size = 9),
+    strip.text = element_text(size = 12, face = "bold", color = "darkblue"),  # Highlight facet labels
+    panel.spacing = unit(2, "lines"),  # Increase space between facets
+    legend.position = "none",  # Remove legend
+    panel.grid.major = element_line(color = "gray90"),
+    panel.grid.minor = element_blank()
+  )
+
+```
+
+# Discussion {#sec-discussion}
+
+## Age and Developmental Trajectories
+
+The findings emphasize age as the most influential predictor of vocabulary acquisition. The sharp increase in predicted probabilities as children grow older aligns with expectations, as the developmental window between 18 and 30 months is crucial for rapid language learning. The steady upward trend in median vocabulary probabilities suggests that this period is marked by consistent growth in both production and comprehension. However, the growing variability between the upper and lower percentiles reveals the diverse learning trajectories among children. While some children quickly advance, others may require more time, reflecting the role of environmental factors and individual differences in cognitive development.
+
+Interestingly, the plateauing trend observed in certain facets of comprehension suggests that as children master foundational vocabulary, their acquisition of more complex or context-specific words becomes less predictable. This shift highlights the importance of contextual factors such as exposure to rich language environments and interactions with caregivers.
+
+## Word Categories: Foundation and Complexity
+
+The analysis of word categories revealed striking differences in acquisition patterns. Categories such as “Function Words,” “Living Things,” and “Objects” displayed higher predicted probabilities, likely because these words are more frequently encountered in everyday interactions and form the backbone of early communication. In contrast, categories like “Verbs” and “Sensory Words” demonstrated lower probabilities and wider variability, suggesting they are more challenging for young learners. These words often require greater contextual understanding or abstract thinking, which may develop later in the language acquisition process.
+
+The variability in word categories sheds light on how children’s experiences shape their vocabulary. For instance, categories with higher predicted probabilities may reflect a shared baseline of language exposure across children, whereas the broader spread in categories like “Adjectives” or “Sensory Words” points to the influence of specific cultural or environmental factors.
+
+The acceleration in early vocabulary is even clearer when looking at production reports from older children using Words & Sentences. Figure 5.3 shows this pattern. In every language, the median child is reported to produce 50 words between 16–20 months (dotted line), though – as we will see below – this analysis masks tremendous between-child variability during this period. In addition, languages vary considerably in the absolute number of words reported. (As it is a major outlier, we have discussed the Beijing Mandarin WS data in Chapter 3, section on difficult data). Nevertheless, there are still substantial consistencies in the shape and general numerical range across languages.
+
+During the period of 24–30 months, we see curves leveling out. Presumably, this leveling does not reflect a slowing in the rate of acquisition, which most researchers assume continues unabated for many years (e.g., Bloom, Tinker, and Scholnick 2001). Instead, it reflects the limitations of the CDI instrument, in that there are many possible “more advanced” words that children are likely learning, of which only a small subset are represented on any form.
+
+The results highlight distinct trajectories in vocabulary development among children. Production scores showed a steady increase with age, with notable accelerations between 18 and 30 months. This period is critical for vocabulary acquisition, as children rapidly expand their linguistic capabilities. The variability observed in percentile distributions emphasizes individual differences in learning rates, influenced by factors such as exposure to language, socio-economic background, and cognitive abilities.
+
+The analysis of comprehension data revealed a similar trend, with a marked rise in vocabulary comprehension after 18 months. Median comprehension scores provided a robust central tendency, effectively avoiding skewness caused by outliers. The plateau observed around 30 months suggests a stabilization in vocabulary growth, likely reflecting the limitations of the CDI dataset rather than a developmental plateau.
+
+## Broader Implications for Language Development
+
+The findings of this study offer practical applications for early education and language interventions by highlighting specific word categories that are more challenging for children to acquire. For instance, verbs and sensory words, which often require greater contextual understanding, could be emphasized in storytelling, play, and structured educational settings to help bridge the gap in these more complex categories. Tailored approaches in language development programs can address individual learning needs, with children demonstrating slower growth in foundational vocabulary benefiting from increased exposure to high-frequency words. Conversely, those excelling in comprehension may gain from activities introducing less common or context-specific terms, thereby expanding their linguistic repertoire.
+
+Key predictors, including age, norming status, and lexical categories, significantly influenced vocabulary acquisition. Age was the strongest determinant of language growth, with older children showing higher vocabulary scores, consistent with developmental expectations. Additionally, children in the norming group exhibited superior vocabulary acquisition, potentially due to the structured linguistic environments associated with their assessment. Lexical categories provided further insights into vocabulary development, with objects and verbs showing higher predicted probabilities of achieving advanced vocabulary levels, reflecting their functional importance in early communication. In contrast, sensory words and adjectives displayed less consistent patterns, suggesting their acquisition may occur later as children’s linguistic abilities become more sophisticated.
+
+## Limitations and Future Directions
+
+264 typically developing Chinese children (145 boys and 119 girls) were included from a longitudinal study of languageWhile the findings offer valuable insights, several limitations should be acknowledged. First, the reliance on parental reports introduces potential biases, including over- or underestimation of children’s abilities. Future studies could complement CDI data with observational or experimental measures to enhance reliability. Second, the cross-sectional nature of the data limits the ability to track individual developmental trajectories. Longitudinal studies are needed to capture within-child variability and the dynamics of vocabulary growth over time.Familial factors and reading or language related cognitive skills were found to be associated with these developmental subgroups.
+
+Future research should also explore the influence of environmental and contextual factors, such as language exposure, educational interventions, and socio-economic status, on vocabulary acquisition. These factors could provide a more comprehensive understanding of the mechanisms underlying linguistic development.
+
+The strongest developmental inferences can be made by the examination of longitudinal data, in which children’s individual development is measured multiple times using the same instrument. Unfortunately, relatively little of our CDI data comes from this type of repeated administration. Figure 3.5 shows the number of administrations for particular languages that come from longitudinal datasets with a particular depth. There is a substantial amount of two-administration longitudinal data for several languages, but only a few have more than two observations for individual children.In general, this aspect of our data is a consequence of the fact that, for normative datasets, pure cross-sectional data collection is used to ensure statistical independence between datapoints. Thus, we must typically settle for using the large amount of available cross-sectional data to average out individual variability. 
+
+\newpage
+
+\appendix
+
+# Appendix {#sec-data2}
+
+## This criterion is linked to a Learning OutcomeSurveys, sampling, and observational data appendix
+Please include an appendix where you focus on some aspect of surveys, sampling or observational data, related to your paper. This should be an in-depth exploration, akin to the "idealized methodology/survey/pollster methodology" sections of Paper 2. Some aspect of this is likely covered in the Measurement sub-section of your Data section, but this would be much more detailed, and might include aspects like simulation and linkages to the literature, among other aspects.
+
+## Data Sheet
+
+# Model details {#sec-model2}
+
+## Model Summary
+
+```{r}
+#| echo: false
+#| eval: true
+#| label: tbl-modelsummary
+#| warning: false
+
+modelsummary(logistic_model)
+```
+
+\newpage
+
+## Diagnostics
+
+### Confusion Matrix
+```{r}
+#| echo: false
 analysis_data_test <- read_parquet(here::here("data/02-analysis_data/test_data.parquet"))
 
 # Preprocess test data
 analysis_data_test <- analysis_data_test %>%
   mutate(prod_comp_mean = (production + comprehension) / 2,  # Average of production and comprehension
-    high_vocabulary = ifelse(prod_comp_mean > 350, 1, 0),  # Binary target variable
+    high_vocabulary = ifelse(prod_comp_mean > 300, 1, 0),  # Binary target variable
     age_scaled = scale(age)  # Standardize age
   ) %>%
   drop_na(prod_comp_mean)  # Drop rows with NA in prod_comp_mean
@@ -430,158 +642,53 @@ confusion_matrix <- table(
 )
 print(confusion_matrix)
 
+# Compute accuracy, sensitivity, specificity, and precision
 accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
-print(paste("Accuracy:", accuracy))
+sensitivity <- confusion_matrix[2, 2] / sum(confusion_matrix[2, ])  # True Positives / Actual Positives
+specificity <- confusion_matrix[1, 1] / sum(confusion_matrix[1, ])  # True Negatives / Actual Negatives
+precision <- confusion_matrix[2, 2] / sum(confusion_matrix[, 2])  # True Positives / Predicted Positives
+
+# Create a dataframe for metrics
+metrics <- data.frame(
+  Metric = c("Accuracy", "Sensitivity (Recall)", "Specificity", "Precision"),
+  Value = c(accuracy, sensitivity, specificity, precision)
+)
+
+# Display the table using kable
+kable(metrics, col.names = c("Metric", "Value"), format = "markdown", digits = 2)
 ```
 
+### ROC Curve and AUC
 ```{r}
 #| echo: false
-#| eval: true
-#| label: fig-goodgood
-#| fig-cap: How the probability of high vocabulary varies with age by aggregating the predictions for each age group
-#| warning: false
-#| message: false
-
-# Add predicted probabilities to the test dataset
-analysis_data_test <- analysis_data_test %>% mutate(predicted_prob = predict(logistic_model, newdata = analysis_data_test, type = "response"))
-
-# Aggregate mean predicted probabilities by age and broad_category
-age_broad_category_predictions <- analysis_data_test %>%
-  group_by(age, broad_category) %>%
-  summarize(mean_predicted_prob = mean(predicted_prob, na.rm = TRUE), .groups = "drop")
-
-broad_category_summary <- age_broad_category_predictions %>%
-  group_by(broad_category) %>%
-  summarize(overall_mean_prob = mean(mean_predicted_prob, na.rm = TRUE))
-
+library(pROC)
+roc_curve <- roc(analysis_data_test$high_vocabulary, predicted_probabilities)
+auc_value <- auc(roc_curve)
+cat(paste("AUC:", auc_value, "\n"))
+plot(roc_curve, main = "ROC Curve", col = "blue", lwd = 2)
 ```
 
-## Distribution of Predicted Probabilities by Broad Category
-
-The @fig-prediction illustrates the distribution of predicted probabilities for high vocabulary levels across various broad categories. The density curves show distinct peaks and variability, reflecting the differences in how well each category predicts high vocabulary. Notably, “Sensory Words” and “Objects” exhibit higher density in the middle range of predicted probabilities, suggesting moderate association with high vocabulary. In contrast, categories like “Activities” and “Function Words” have wider, flatter distributions, indicating greater uncertainty or diversity in prediction. This variability highlights the nuanced role of word categories in predicting high vocabulary acquisition. Further analysis could explore why certain categories contribute more consistently to predictions than others.
-The density plot highlights distinct patterns in predicted probabilities, with nouns and verbs showing higher peaks, indicating a stronger likelihood of high vocabulary acquisition in these categories. This suggests that broad categories contribute differently to vocabulary development, with nouns and verbs potentially playing a more significant role.
-
-Each facet represents a unique category, with the x-axis denoting the predicted probability of high vocabulary and the y-axis representing density.
-
-The plots highlight distinct patterns in the distributions of predicted probabilities for each category. Categories such as Adjectives and Function Words exhibit broader distributions, suggesting greater variability in the likelihood of achieving a high vocabulary score within these categories. In contrast, categories like Sensory Words and Activities show relatively concentrated distributions near lower probabilities, indicating more consistent outcomes within those lexical groups.
-
-The graph underscores the heterogeneity of vocabulary acquisition probabilities across different lexical domains. Categories associated with more concrete or commonly encountered words, such as Objects and Living Things, tend to exhibit higher probabilities for vocabulary mastery, reflecting their early and frequent usage in language development. Conversely, categories like Sensory Words show lower probabilities, suggesting that they are acquired less consistently or later in development. This visualization offers insight into the differential patterns of lexical acquisition, emphasizing the varied developmental trajectories across word types.
-
-
+### Precision-Recall Curve
 ```{r}
 #| echo: false
-#| eval: true
-#| label: fig-prediction
-#| fig-cap: This density plot illustrates the predicted probabilities of having a high vocabulary across different broad lexical categories. Each curve represents the density of predicted probabilities within a category, showcasing the variation in predicted outcomes for categories such as Activities, Adjectives, Function Words, Living Things, Objects, Places, Sensory Words, and Verbs. The plot highlights overlapping patterns and areas of divergence in vocabulary acquisition likelihood across different types of words.
-#| warning: false
-
-# Assuming `analysis_data_test` contains the predicted probabilities and broad categories
-
-ggplot(analysis_data_test, aes(x = predicted_prob, fill = broad_category)) +
-  geom_density(alpha = 0.7, color = "black") +  # Density plot with transparency
-  facet_wrap(~ broad_category, scales = "fixed") +  # Same y-axis range for all facets
-  labs(
-    title = "Distribution of Predicted Probabilities by Category",
-    x = "Predicted Probability",
-    y = "Density",
-    fill = "Broad Category") +
-  theme_minimal(base_size = 14) +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
-    axis.title = element_text(size = 14),
-    axis.text = element_text(size = 12),
-    strip.text = element_text(size = 12, face = "bold"),  # Styling facet labels
-    legend.position = "none",  # Remove legend
-    panel.grid.major = element_line(color = "gray85"),
-    panel.grid.minor = element_blank())
-
+# Precision-Recall Curve (optional, useful for imbalanced data)
+#install.packages("PRROC")
+library(PRROC)
+pr_curve <- pr.curve(scores.class0 = predicted_probabilities[analysis_data_test$high_vocabulary == 1],
+                     scores.class1 = predicted_probabilities[analysis_data_test$high_vocabulary == 0],
+                     curve = TRUE)
+plot(pr_curve, main = "Precision-Recall Curve")
 ```
-
-# Discussion
-
-
-## Vocabulary Development Patterns {#sec-firstpoint}
-
-The acceleration in early vocabulary is even clearer when looking at production reports from older children using Words & Sentences. Figure 5.3 shows this pattern. In every language, the median child is reported to produce 50 words between 16–20 months (dotted line), though – as we will see below – this analysis masks tremendous between-child variability during this period. In addition, languages vary considerably in the absolute number of words reported. (As it is a major outlier, we have discussed the Beijing Mandarin WS data in Chapter 3, section on difficult data). Nevertheless, there are still substantial consistencies in the shape and general numerical range across languages.
-
-During the period of 24–30 months, we see curves leveling out. Presumably, this leveling does not reflect a slowing in the rate of acquisition, which most researchers assume continues unabated for many years (e.g., Bloom, Tinker, and Scholnick 2001). Instead, it reflects the limitations of the CDI instrument, in that there are many possible “more advanced” words that children are likely learning, of which only a small subset are represented on any form.
-
-The results highlight distinct trajectories in vocabulary development among children. Production scores showed a steady increase with age, with notable accelerations between 18 and 30 months. This period is critical for vocabulary acquisition, as children rapidly expand their linguistic capabilities. The variability observed in percentile distributions emphasizes individual differences in learning rates, influenced by factors such as exposure to language, socio-economic background, and cognitive abilities.
-
-The analysis of comprehension data revealed a similar trend, with a marked rise in vocabulary comprehension after 18 months. Median comprehension scores provided a robust central tendency, effectively avoiding skewness caused by outliers. The plateau observed around 30 months suggests a stabilization in vocabulary growth, likely reflecting the limitations of the CDI dataset rather than a developmental plateau.
-
-## Role of Predictors in Vocabulary Growth
-
-Key predictors, including age, norming status, and broad lexical categories, significantly influenced vocabulary acquisition. Age, as expected, showed the strongest correlation, underlining its role as a primary determinant of language development. Children from the norming group exhibited higher vocabulary scores, possibly due to more structured linguistic environments or assessment settings.
-
-Lexical categories revealed nuanced contributions to vocabulary development. Categories such as objects and verbs were associated with higher predicted probabilities of achieving advanced vocabulary levels, reflecting their functional importance in early communication. Conversely, categories like sensory words and adjectives showed less consistent trends, indicating their later emergence in the linguistic repertoire.
-
-
-## Third discussion point
-
-
-
-
-
-
-
-
-
-
-## Limitations and Future Directions
-
-While the findings offer valuable insights, several limitations should be acknowledged. First, the reliance on parental reports introduces potential biases, including over- or underestimation of children’s abilities. Future studies could complement CDI data with observational or experimental measures to enhance reliability. Second, the cross-sectional nature of the data limits the ability to track individual developmental trajectories. Longitudinal studies are needed to capture within-child variability and the dynamics of vocabulary growth over time.
-
-Future research should also explore the influence of environmental and contextual factors, such as language exposure, educational interventions, and socio-economic status, on vocabulary acquisition. These factors could provide a more comprehensive understanding of the mechanisms underlying linguistic development.
-
-The strongest developmental inferences can be made by the examination of longitudinal data, in which children’s individual development is measured multiple times using the same instrument. Unfortunately, relatively little of our CDI data comes from this type of repeated administration. Figure 3.5 shows the number of administrations for particular languages that come from longitudinal datasets with a particular depth. There is a substantial amount of two-administration longitudinal data for several languages, but only a few have more than two observations for individual children.In general, this aspect of our data is a consequence of the fact that, for normative datasets, pure cross-sectional data collection is used to ensure statistical independence between datapoints. Thus, we must typically settle for using the large amount of available cross-sectional data to average out individual variability. 
-
-\newpage
-
-
-
-\appendix
-
-# Appendix {#-secdata}
-
-## Additional data details
-
-## Data Sheet
-
-# Model details {#sec-model}
-
-## Model Summary
-
-```{r}
-#| echo: false
-#| eval: true
-#| label: tbl-logistic
-#| tbl-cap: model summary table
-#| warning: false
-
-modelsummary(logistic_model)
-
-```
-
-
-## Diagnostics
-
-### Accuracy
+### Binned Residual Plot
 ```{r}
 #| echo: false
 
-analysis_data_train <- read_parquet(here::here("data/02-analysis_data/train_data.parquet"))
-
-# Predicted probabilities and classes
-predicted_classes <- ifelse(fitted(logistic_model) > 0.5, 1, 0)
-confusion_matrix <- table(Predicted = predicted_classes, Actual = analysis_data_train$high_vocabulary)
-
-# Print confusion matrix and accuracy
-print(confusion_matrix)
-accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
-print(paste("Accuracy:", round(accuracy, 3)))
+binnedplot(fitted(logistic_model), residuals(logistic_model, type = "response"),
+           xlab = "Fitted Probabilities", ylab = "Average Residual",
+           main = "Binned Residual Plot")
 ```
 
+### Predicted Probabilities by Age
 ```{r}
 #| echo: false
 
@@ -594,11 +701,11 @@ analysis_data_test <- analysis_data_test %>%
   mutate(high_vocabulary = factor(high_vocabulary, labels = c("0", "1")))
 
 # Improved Panel (a): Scatterplot of Predicted Probabilities
-ggplot(analysis_data_test, aes(x = age_scaled, y = predicted_prob, color = high_vocabulary)) +
+ggplot(analysis_data_test, aes(x = age, y = predicted_prob, color = high_vocabulary)) +
   geom_point(alpha = 0.6, size = 3, shape = 16, position = position_jitter(width = 0.05, height = 0.02)) +
   labs(
-    title = "Panel (a): Predicted Probabilities by Age (Scaled)",
-    x = "Age (Scaled)",
+    title = "Predicted Probabilities by Age",
+    x = "Age",
     y = "Predicted Probability of High Vocabulary",
     color = "Observed Outcome"
   ) +
@@ -616,23 +723,15 @@ ggplot(analysis_data_test, aes(x = age_scaled, y = predicted_prob, color = high_
 
 ```
 
-### Binned Residual Plot
-```{r}
-#| echo: false
 
-binnedplot(fitted(logistic_model), residuals(logistic_model, type = "response"),
-           xlab = "Fitted Probabilities", ylab = "Average Residual",
-           main = "Binned Residual Plot")
-```
-
-
-\newpage
 
 # Acknowledgements
 
-This project was conducted under the help of OpenAI’s ChatGPT 4.0, which provided invaluable assistance in drafting and refining the paper. The analysis was conducted using a suite of packages from @citeR, which offered robust functionality for data manipulation, visualization, and storage. We extend our gratitude to the teams behind the @tidyverse, @ggplot2, @scales, @dplyr, @tidyr, @modelsummary and @knitr packages, whose tools were instrumental in streamlining the data cleaning, analysis, and graphing processes. Additionally, @arrow played a critical role in efficient data handling and storage through Parquet files.
+This project was conducted under the help of OpenAI’s ChatGPT 4.0, which provided invaluable assistance in drafting and refining the paper. The analysis was conducted using a suite of packages from @citeR, which offered robust functionality for data manipulation, visualization, and storage. We extend our gratitude to the teams behind the @tidyverse, @ggplot2, @scales, @dplyr, @tidyr, @arm, @modelsummary and @knitr packages, whose tools were instrumental in streamlining the data cleaning, analysis, and graphing processes. Additionally, @arrow played a critical role in efficient data handling and storage through Parquet files.
 
 A special acknowledgment goes to the @wordbankr team for providing the extensive dataset that forms the foundation of this research. Their contribution enabled a comprehensive exploration of vocabulary learning patterns in children. We are deeply grateful to the developers and maintainers of these open-source tools and datasets for their efforts in advancing research and accessibility in the data science community.
+
+\newpage
 
 # References
 
