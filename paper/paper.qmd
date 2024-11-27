@@ -81,23 +81,14 @@ kable(head(summary_table, 10))
 ### Data Collection and Quality Control
 
 The objective of measurement in this study is to translate raw parental reports into reliable indicators of vocabulary acquisition patterns in children. The data is derived from the MacArthur-Bates Communicative Development Inventories (CDI), a widely used tool that collects information on children’s vocabulary comprehension and production through structured parental surveys. These surveys allow parents to report on their child’s understanding and use of specific words, grouped into lexical categories such as nouns, verbs, and adjectives. The raw data collected through the CDI forms the basis for creating the study’s dependent and independent variables.
-- Structured Response Formats: The CDI employs predefined response options for comprehension and production, reducing ambiguity and enhancing consistency in parental reporting.
+- Standardized Format and Structure: The CDI employs predefined response categories, which help to minimize ambiguity in reporting and ensure consistency across respondents. This structured approach mitigates some reporting variability but may not fully capture nuances in vocabulary acquisition.
 - Words Categorization: Vocabulary items are grouped into meaningful lexical categories, allowing for a more nuanced understanding of children’s vocabulary development across different word types.
-- Norming Group Comparison: The inclusion of norming groups as benchmarks helps to ensure the validity of reported vocabulary scores and allows for cross-child comparison. These groups provide a standardized reference for analyzing individual differences in language acquisition.
+- Norming Group Representation: To improve validity, a subset of children from norming groups is included as a benchmark for comparison. While useful, this raises concerns about whether the norming group adequately represents the population’s diversity in language development.
 - Variable Standardization: Continuous variables, such as age, are standardized (e.g., scaled) to reduce variability and improve the interpretability of statistical models. This ensures that coefficients reflect meaningful changes in relation to standardized measures.
-- Bias Mitigation: By structuring responses and including norming benchmarks, the CDI minimizes some of the biases inherent in self-reported data, such as over- or underestimation by parents.
+- Bias Mitigation: The CDI’s structured responses and norming benchmarks help reduce bias but cannot fully eliminate inaccuracies from parental reporting. Parents may overestimate or underestimate their child’s abilities due to subjective perceptions or limited observations, which remains a limitation of the self-reported data. 
 - Missing Data Handling: Observations with incomplete or invalid responses were excluded from the analysis to maintain the integrity and reliability of the dataset.
-
-### Reporting Bias
-
-However, there are several considerations regarding the data collection process:
-
--	Parental Reporting Bias: The reliance on parental reports introduces the potential for bias, including overestimation or underestimation of a child’s abilities. This is inherent to self-reported data and can affect the accuracy of the results.
--	Standardized Format and Structure: The CDI employs predefined response categories, which help to minimize ambiguity in reporting and ensure consistency across respondents. This structured approach mitigates some reporting variability but may not fully capture nuances in vocabulary acquisition.
--	Norming Group Representation: To improve validity, a subset of children from norming groups is included as a benchmark for comparison. While useful, this raises concerns about whether the norming group adequately represents the population’s diversity in language development.
 -	Temporal Limitations: The CDI data represents snapshots of vocabulary development at specific ages, which may not account for rapid changes or variations over time in a child’s language acquisition process.
-
-Despite its standardized structure, the CDI is subject to biases inherent in parental reporting, including over or underestimation bias. Parents may unintentionally overestimate or underestimate their child’s skills due to subjective perceptions or limited observations. Social Desirability Bias: Responses may be influenced by parents’ desire to portray their child’s language development favorably.
+- Social Desirability Bias: Responses may be influenced by parents’ desire to portray their child’s language development favorably.
 
 ## Outcome Variable
 
@@ -563,9 +554,7 @@ The analysis of word categories revealed striking differences in acquisition pat
 
 The variability in word categories sheds light on how children’s experiences shape their vocabulary. For instance, categories with higher predicted probabilities may reflect a shared baseline of language exposure across children, whereas the broader spread in categories like “Adjectives” or “Sensory Words” points to the influence of specific cultural or environmental factors.
 
-The acceleration in early vocabulary is even clearer when looking at production reports from older children using Words & Sentences. Figure 5.3 shows this pattern. In every language, the median child is reported to produce 50 words between 16–20 months (dotted line), though – as we will see below – this analysis masks tremendous between-child variability during this period. In addition, languages vary considerably in the absolute number of words reported. (As it is a major outlier, we have discussed the Beijing Mandarin WS data in Chapter 3, section on difficult data). Nevertheless, there are still substantial consistencies in the shape and general numerical range across languages.
-
-During the period of 24–30 months, we see curves leveling out. Presumably, this leveling does not reflect a slowing in the rate of acquisition, which most researchers assume continues unabated for many years (e.g., Bloom, Tinker, and Scholnick 2001). Instead, it reflects the limitations of the CDI instrument, in that there are many possible “more advanced” words that children are likely learning, of which only a small subset are represented on any form.
+The acceleration in early vocabulary is even clearer when looking at production reports from older children using Words & Sentences. In every language, the median child is reported to produce 50 words between 16–20 months (dotted line), though this analysis masks tremendous between-child variability during this period. During the period of 24–30 months, we see curves leveling out. Presumably, this leveling does not reflect a slowing in the rate of acquisition, which most researchers assume continues unabated for many years [@mayor]. Instead, it reflects the limitations of the CDI instrument, in that there are many possible “more advanced” words that children are likely learning, of which only a small subset are represented on any form.
 
 The results highlight distinct trajectories in vocabulary development among children. Production scores showed a steady increase with age, with notable accelerations between 18 and 30 months. This period is critical for vocabulary acquisition, as children rapidly expand their linguistic capabilities. The variability observed in percentile distributions emphasizes individual differences in learning rates, influenced by factors such as exposure to language, socio-economic background, and cognitive abilities.
 
