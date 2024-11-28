@@ -1,11 +1,11 @@
 ---
 title: "Pathways to Early Vocabulary Acquisition"
-subtitle: "Predicting English Language Development Trajectories in Children Aged 16–30 Months"
+subtitle: "Mapping English Language Development Trajectories in Children Aged 16–30 Months"
 author: Yongqi Liu
 thanks: "Code and data are available at: https://github.com/Cassieliu77/Vocabulary_Learning_Pattern.git"
 date: today
 date-format: long
-abstract: "This study examines vocabulary acquisition in children aged 16–30 months using logistic regression models and data from the MacArthur-Bates Communicative Development Inventories. Age is the strongest predictor, with older children showing higher vocabulary proficiency, while foundational word categories like Function Words are acquired more consistently than complex ones such as Sensory Words. Children in norming groups outperform non-norming peers, highlighting the impact of structured linguistic environments. The findings support targeted interventions to address variability in complex vocabulary acquisition and promote balanced language development."
+abstract: "This study examines vocabulary acquisition in children aged 16–30 months using data from the MacArthur-Bates Communicative Development Inventories. Age is the strongest predictor, with vocabulary size increasing consistently and foundational categories like Function Words, Living Things, and Objects showing higher predicted probabilities, indicating their universal acquisition. Complex categories such as Sensory Words, Adjectives, and Places exhibit broader distributions and lower probabilities, reflecting their reliance on contextual understanding and cognitive complexity. These findings underscore age-specific patterns in vocabulary growth and the need for targeted interventions to support diverse language learning trajectories."
 format: pdf
 toc: true
 number-sections: true
@@ -39,24 +39,23 @@ logistic_model <- readRDS(here::here("models/logistic_model_last.rds"))
 
 # Introduction {#sec-intro}
 
-Understanding how children acquire vocabulary is a cornerstone of developmental linguistics and early childhood education. Vocabulary growth is not only a key indicator of cognitive development but also serves as a foundation for future linguistic and academic success. The interplay of factors such as age, linguistic environments, and word categories influences children’s vocabulary acquisition in complex and dynamic ways. By analyzing patterns and predictors of vocabulary growth, researchers can illuminate the developmental trajectories that underpin language acquisition, offering a clearer understanding of how children progress in their linguistic abilities.
+Language development in infants and toddlers is often discussed in terms of isolated stages and distinct milestones. However, the fact is that language grows continuously, progressing month by month—and even day by day—in between these milestones. While language milestones are important, it is also crucial to recognize the month-by-month progression in comprehension and production during early language development. To better understand this growth, this study shows investigation on @cdi data and illustrates language development monthly over 16-30 months aged children.
 
-This study utilizes a dataset from the @wordbankr database, which aggregates data from the MacArthur-Bates Communicative Development Inventories (CDI), to investigate vocabulary development in children aged 16–30 months. By employing a logistic regression model, the research estimates the likelihood of achieving a high vocabulary score using predictors such as age, norming status, and lexical categories. This model serves as a tool to explore how these factors collectively influence children’s vocabulary acquisition trajectories.
+Understanding how children acquire vocabulary is a cornerstone to develop linguistics and early childhood education. Vocabulary growth is not only a key indicator of cognitive development but also serves as a foundation for future linguistic and academic success. The interplay of factors such as age, linguistic environments, and lexcial categories influences children’s vocabulary acquisition in complex and dynamic ways. By analyzing patterns and predictors of vocabulary growth, this paper describes the developmental trajectories that underpin language acquisition, offering a clearer understanding of how children progress in their linguistic abilities.
 
-The estimand of interest in this study is the conditional probability that a child possesses advanced vocabulary proficiency, defined as a high combined comprehension and production score, given specific predictors. These predictors include the child’s age in months, their norming status (whether they belong to a standardized sample used for benchmarking), and the lexical category of the words (e.g., Function Words, Verbs, Adjectives). By employing a logistic regression model, the research estimates how these variables individually and interactively influence the likelihood of achieving advanced vocabulary levels. The model demonstrates developmental trends, such as how median vocabulary proficiency increases with age, and reveals how specific word categories contribute uniquely to language growth. For example, foundational categories like Function Words and Objects may show consistently higher probabilities of acquisition, while more abstract categories, such as Verbs and Sensory Words, exhibit greater variability due to their complexity or context-specific nature.
+This study utilizes a dataset from the @wordbankr package, which aggregates data from @cdi, to investigate vocabulary development in early childhood. By employing a logistic regression model, the research also estimates the likelihood of achieving a high vocabulary score using predictors such as age, norming status, and lexical categories. This model serves as a tool to explore how these factors collectively influence children’s vocabulary acquisition trajectories.
 
-Key findings reveal distinct trajectories of vocabulary acquisition across different word categories, with age emerging as the strongest predictor of vocabulary growth. The analysis demonstrates that as children age, their likelihood of achieving high vocabulary scores consistently increases, reflecting the natural progression of language development. Categories such as “Living Things” and “Function Words” display stable and high predicted probabilities, likely due to their frequent occurrence in everyday communication and their role in forming early linguistic structures. Conversely, categories such as “Sensory Words” and “Adjectives” show more variability, highlighting the challenges posed by their later acquisition and the contextual understanding they require.
+The estimand of interest in this study is the probability that an English-speaking child achieves a high vocabulary score, defined by surpassing a threshold of 300 combined comprehension and production words. These predictors include the child’s age (measured in months), their inclusion in a norming group (standardized benchmark), and the lexical category of the words they acquire (e.g., Function Words, Adjectives, Verbs). The study aims to quantify the influence of these factors on vocabulary proficiency and identify how age and lexical categories uniquely shape developmental trajectories. The model further investigates variability in vocabulary acquisition across categories, highlighting disparities between foundational categories, such as Function Words, which are more consistently acquired, and complex categories like Sensory Words, which show broader variability due to contextual and cognitive demands.
 
-Additionally, children in the norming group, who are assessed in structured linguistic environments, consistently achieve higher vocabulary scores compared to non-norming children. This difference underscores the influence of systematic linguistic exposure in shaping vocabulary development. The results not only provide a nuanced understanding of vocabulary acquisition but also emphasize the importance of targeted language interventions. They suggest that focusing on underdeveloped categories, such as Sensory Words and Adjectives, could help bridge gaps in vocabulary learning. Furthermore, these findings set the stage for future research into the broader contextual factors, such as socio-economic status and bilingualism, that may further explain variability in language acquisition trajectories.
+Key findings reveal distinct trajectories of vocabulary acquisition across different word categories, with age emerging as the strongest predictor of vocabulary growth. Also, the acquisition speed among children differs a lot. The analysis shows that as children age, their likelihood of achieving high vocabulary scores increases consistently, reflecting the natural progression of language development. Foundational categories such as “Living Things” and “Function Words” exhibit stable and high predicted probabilities, likely due to their frequent use in daily communication and their role in forming early linguistic structures. In contrast, complex categories such as “Sensory Words” and “Adjectives” display greater variability, highlighting the cognitive and contextual challenges associated with their acquisition. Additionally, the influence of linguistic environments on vocabulary development is significant. Children in the norming groups, who benefit from structured linguistic exposure and are assessed under more controlled and standardized conditions, consistently outperform their non-norming peers in vocabulary scores. This highlights the impact of structured environments on language development and underscores the importance of norming as a tool for calibrating developmental assessments. The results suggests the need for targeted interventions, particularly in supporting the acquisition of underdeveloped categories such as Sensory Words and Adjectives. Furthermore, the findings in this paper pave the way for future research to explore broader contextual factors—such as socio-economic status and bilingualism—that may further explain the observed variability in children’s language acquisition trajectories.
 
-The remainder of this paper is structured as follows: @sec-intro provides an introduction and decribe the estimand for the paper. @sec-data1 describes the dataset, highlighting the variables used and their distributions. @sec-model1 provides an overview of the logistic regression model and its assumptions. @sec-result presents the visualized results, including variability in vocabulary acquisition, the role of predictors, and predicted probabilities. Finally, @sec-discussion discusses the implications of the findings and outlines limitations and directions for future research. The data used in this study all comes from @wordbankr, and the whole paper is conducted and analyzed in @citeR.
-
+The paper is structured as follows: @sec-intro provides an introduction and describes the estimand for the paper. @sec-data1 describes the dataset, highlighting the variables used and their distributions. @sec-model1 provides an overview of the logistic regression model and its detailed explanations. @sec-result presents the visualized results, highlighting variability in vocabulary acquisition by age and word categories, as well as predicted probabilities. Finally, @sec-discussion delves into the findings, explores their implications, and outlines the limitations and future research directions. [Appendix - @sec-data2] includes in-depth exploration and evaluation on data collection methods. [Appendix - @sec-model2] contains the  model diagnostics and accuracy evaluation. The data for this study is sourced from @wordbankr and @cdi, with the entire analysis conducted in @citeR.
 
 # Data {#sec-data1}
 
 ## Overview
 
-The original dataset was obtained from @wordbankr. After undergoing a thorough cleaning process—including grouping related items and removing missing values—the analysis focuses on the key variables: category, age, comprehension, production, is_norming, and broad_category. These variables form the foundation of the analysis dataset. An overview of the cleaned dataset is presented in @tbl-data.
+The original dataset was obtained from @cdi and downloaded using the R package @wordbankr. After a thorough cleaning process such as grouping related items and removing missing values, the analysis focuses on key variables, including category, age, comprehension, production and is_norming. These variables form the foundation of the analysis dataset, with an overview provided in @tbl-data.
 
 ```{r}
 #| label: tbl-data
@@ -78,60 +77,56 @@ kable(head(summary_table, 10))
 
 ## Measurement
 
-The objective of measurement in this study is to translate raw parental reports into reliable indicators of vocabulary acquisition patterns in children. The data is derived from the MacArthur-Bates Communicative Development Inventories (CDI), a widely used tool that collects information on children’s vocabulary comprehension and production through structured parental surveys. These surveys allow parents to report on their child’s understanding and use of specific words, grouped into lexical categories such as nouns, verbs, and adjectives. The raw data collected through the CDI forms the basis for creating the study’s dependent and independent variables.
+The objective of this study’s measurement approach is to transform raw parental reports into reliable indicators of children’s vocabulary acquisition patterns. The data is sourced from @cdi, a widely used tool that collects detailed information on children’s vocabulary comprehension and production through structured parental surveys. These surveys allow parents to report their child’s understanding and usage of specific words, which are categorized into lexical groups such as nouns, verbs, and adjectives. This structured framework provides the foundation for creating the dependent and independent variables used in the analysis.
 
-- Standardized Format and Structure: The CDI employs predefined response categories, which help to minimize ambiguity in reporting and ensure consistency across respondents. This structured approach mitigates some reporting variability but may not fully capture nuances in vocabulary acquisition.
+- Standardized Structure: The CDI uses predefined response categories to minimize reporting ambiguity and ensure consistency across participants. While this format reduces variability in responses, it may not fully capture the nuances of vocabulary acquisition.
 
-- Words Categorization: Vocabulary items are grouped into meaningful lexical categories, allowing for a more nuanced understanding of children’s vocabulary development across different word types.
+- Words Categorization: Vocabulary items are grouped into distinct lexical categories, such as Function Words, Sensory Words, and Adjectives, enabling a detailed examination of how different types of vocabulary are acquired.
 
-- Norming Group Representation: To improve validity, a subset of children from norming groups is included as a benchmark for comparison. While useful, this raises concerns about whether the norming group adequately represents the population’s diversity in language development.
-
-- Variable Standardization: Continuous variables, such as age, are standardized (e.g., scaled) to reduce variability and improve the interpretability of statistical models. This ensures that coefficients reflect meaningful changes in relation to standardized measures.
+- Norming Sample Inclusion: To improve validity, the dataset includes a subset of children from norming groups, serving as benchmarks for language development. While these groups provide a standard for comparison, they may not fully represent the diversity of the broader population.
 
 - Bias Mitigation: The CDI’s structured responses and norming benchmarks help reduce bias but cannot fully eliminate inaccuracies from parental reporting. Parents may overestimate or underestimate their child’s abilities due to subjective perceptions or limited observations, which remains a limitation of the self-reported data. 
 
 - Missing Data Handling: Observations with incomplete or invalid responses were excluded from the analysis to maintain the integrity and reliability of the dataset.
 
-- Temporal Limitations: The CDI data represents snapshots of vocabulary development at specific ages, which may not account for rapid changes or variations over time in a child’s language acquisition process.
-
-- Social Desirability Bias: Responses may be influenced by parents’ desire to portray their child’s language development favorably.
+- Temporal Limitations: Temporal Snapshot Limitation: The CDI captures vocabulary development at discrete age points, which may not fully reflect rapid, short-term changes in children’s language acquisition.
 
 ## Outcome Variable
 
 ### High Vocabulary Score
 
-The outcome variable in this study, High Vocabulary Score, is a binary indicator designed to identify individuals with advanced vocabulary proficiency. This variable is derived from two key measures:
+The outcome variable in this study, High Vocabulary Score, is a binary indicator designed to identify individuals with advanced vocabulary. This variable is derived from two key measures:
 
 1. Comprehension: This variable represents the ability to understand words and phrases, reflecting the receptive language skills of individuals. Comprehension scores are numerical and vary across the dataset.
 
 2. Production: This variable captures the ability to produce words, reflecting expressive language skills. Like comprehension, production scores are numerical and provide the standard into verbal articulation capabilities.
 
-3. The High Vocabulary Score is calculated using the average of comprehension and production scores for each individual. This average is represented as: $\text{prod\_comp\_mean} = \frac{\text{Comprehension} + \text{Production}}{2}$
+3. High Vocabulary Score: It is calculated using the average of comprehension and production scores for each individual. This average is represented as: $\text{prod\_comp\_mean} = \frac{\text{Comprehension} + \text{Production}}{2}$
 
-Based on @wendy, I looked into the normal vocabulary size change among the children aged 16 to 30 months. To classify individuals, a threshold value of 300 is applied to `prod_comp_mean`:
+Referring to @wendy and exploratory data analysis, I investigated how productive vocabulary size evolves in children aged 16 to 30 months. Observing the 50th percentile, which approximates 300 words, I decided to create a binary variable using this threshold. This choice ensures the threshold reflects a typical vocabulary level for children aged 16 to 30 months, avoiding the influence of outliers. Using the 50th percentile also aligns with the goal of distinguishing between children with relatively advanced vocabulary (above the median) and those with less developed vocabulary (below the median), making it an effective and balanced benchmark for binary classification.
+
+To classify individuals, a threshold value of 300 is applied to `prod_comp_mean`:
+
 - Individuals with `prod_comp_mean > 300` are classified as having a high vocabulary score (outcome = 1).
+
 - Those with `prod_comp_mean <= 300` are classified as not having a high vocabulary score (outcome = 0).
 
-This approach ensures that both receptive (comprehension) and expressive (production) skills are considered in defining advanced vocabulary. The threshold of 300 was chosen based on exploratory analysis of the dataset, reflecting a meaningful distinction between individuals with high and low vocabulary abilities. The High Vocabulary Score serves as the dependent variable in the following data analysis part. Its binary nature makes it suitable for modeling with a binomial family distribution, allowing for the estimation of factors that influence advanced vocabulary acquisition.
+This method accounts for both receptive (comprehension) and expressive (production) skills in defining advanced vocabulary. A threshold of 300 provides a clear distinction between individuals with high and low vocabulary abilities. The High Vocabulary Score is used as the dependent variable in the subsequent model setup. Its binary nature makes it well-suited for analysis using a binomial family distribution and for estimating factors influencing advanced vocabulary acquisition.
 
 ```{r}
 #| label: fig-outcome
-#| fig-cap: Distribution of the outcome variable, showing the counts of children classified as having “High Vocabulary” and “Not High Vocabulary” based on their comprehension and production scores. The bar plot illustrates the balance between the two categories in the dataset, which is important for modeling purposes.
+#| fig-cap: Distribution of high vocabulary levels among children aged 16–30 months. The chart shows a larger proportion of children classified as “Not High Vocabulary” compared to those with “High Vocabulary”.
 #| echo: false
 #| warning: false
 #| message: false
 
 outcome_counts <- analysis_data %>%
   count(high_vocabulary) %>%
-  mutate(
-    VocabularyCategory = ifelse(high_vocabulary == 1, "High Vocabulary", "Not High Vocabulary"))
+  mutate(VocabularyCategory = ifelse(high_vocabulary == 1, "High Vocabulary", "Not High Vocabulary"))
 
 ggplot(outcome_counts, aes(x = VocabularyCategory, y = n, fill = VocabularyCategory)) +
   geom_bar(stat = "identity", width = 0.7, show.legend = FALSE) +
-  labs(
-    title = "Distribution of High Vocabulary Levels",
-    x = "Vocabulary Level",
-    y = "Count") +
+  labs(title = "Distribution of High Vocabulary Levels", x = "Vocabulary Level", y = "Count") +
   scale_fill_manual(values = c("High Vocabulary" = "blue", "Not High Vocabulary" = "red")) +
   scale_y_continuous(labels = scales::comma) +
   theme_minimal(base_size = 12) +
@@ -145,44 +140,48 @@ ggplot(outcome_counts, aes(x = VocabularyCategory, y = n, fill = VocabularyCateg
 
 \newpage
 
-## Predictor variables
+## Predictor Variables
 
 ### Age
 
-@fig-age displays the distribution of children’s ages (in months) within the dataset, highlighting key patterns in the sample’s demographic structure. A notable concentration of data is observed among children aged between 24 and 30 months, reflecting an emphasis on capturing vocabulary development during critical periods of language acquisition. These age ranges are known to mark significant milestones in linguistic growth, which could explain their higher representation. Conversely, younger age groups (below 20 months) are underrepresented, likely due to the challenges of assessing vocabulary at earlier stages of development, where verbal communication is less pronounced and parental reporting is more variable.
+Age plays an important role in understanding vocabulary acquisition patterns in children, as it reflects developmental progress over time. As shown in @fig-age, the dataset reveals a concentration of participants between 24 and 30 months, a critical period during which children typically experience substantial gains in vocabulary comprehension and production. This higher representation is likely driven by a research emphasis on developmental milestones that characterize this stage, making the dataset particularly valuable for studying advanced vocabulary acquisition.
 
-The dataset also shows distinct peaks at specific ages, such as 25 and 30 months. These sharp spikes may reflect intentional focus points for testing or developmental benchmarks tied to standardized assessments like the MacArthur-Bates Communicative Development Inventories (CDI). This uneven age distribution underscores the importance of age as a critical factor in analyzing vocabulary acquisition. While the high concentration of data at older ages enhances the analysis into advanced vocabulary development, it also necessitates caution in generalizing findings to underrepresented age groups. This observation emphasizes the need to standardize age in statistical models to account for variability across different age groups.
+Distinct peaks in the dataset, such as at 25 and 30 months, may indicate intentional focus points for testing or align with developmental benchmarks tied to standardized assessments like the MacArthur-Bates Communicative Development Inventories (CDI). However, this uneven distribution also highlights the challenges of assessing vocabulary development in younger children, where verbal communication is less developed, and parental reporting is more variable. These disparities underscore the importance of standardizing age in statistical models to ensure accurate analysis and interpretation, while also exercising caution when generalizing findings to underrepresented age groups.
 
 ```{r}
 #| echo: false
 #| label: fig-age
-#| fig-cap: It shows the distribution of children’s ages (in months) within the dataset. The majority of observations fall between 24 and 30 months, with noticeable peaks at 25 and 30 months, reflecting a focus on key developmental periods. Younger age groups are underrepresented, highlighting the need to account for variability in age when analyzing vocabulary acquisition patterns.
+#| fig-cap: The graph visualizes the age distribution of children in the dataset, starting from 16 months. It shows a varying number of participants across age groups, with peaks around certain ages, such as 25 months, and a notable decline at the youngest and oldest ranges. This distribution highlights the dataset’s emphasis on certain developmental periods, which may reflect the focus of assessments or participant availability.
 #| warning: false
 #| message: false
 
 ggplot(analysis_data, aes(x = age)) +
   geom_histogram(binwidth = 0.5, fill = "steelblue", alpha = 0.8) +
-  labs(title = "Age Distribution", x = "Age (months)", y = "Count") +
-  theme_minimal()+
-  scale_y_continuous(labels = scales::comma)
-
+  labs(
+    title = "Age Distribution",
+    x = "Age (months)",
+    y = "Count") +
+  theme_minimal() +
+  scale_y_continuous(labels = comma) +
+  scale_x_continuous(breaks = seq(16, max(analysis_data$age, na.rm = TRUE), by = 1))
 ```
 
-### Lexical Category
-The words in the dataset were grouped into broad lexical categories to facilitate the analysis of vocabulary acquisition patterns. These categories include Activities, Adjectives, Function Words, Living Things, Objects, Places, Sensory Words, and Verbs. The classification was based on the semantic and functional roles of words, with nouns subdivided into more specific groups such as Living Things, Objects, and Places to capture distinct trends in vocabulary acquisition. For instance, Function Words include pronouns and question words, reflecting grammatical development, while Verbs and Adjectives capture action and descriptive words, essential for sentence construction and expression.
+### Word Category
 
-The bar graph illustrates the distribution of items across these categories, highlighting significant variation in word frequency. Objects constitute the largest category, suggesting a focus on tangible and concrete items, which are likely easier for children to recognize and recall. This is followed by Verbs and Living Things, categories that are fundamental to communication but slightly less prevalent. In contrast, Sensory Words and Activities are sparsely represented, possibly reflecting their specialized and context-dependent nature. The distribution underscores the importance of concrete and functional words in early vocabulary development while highlighting potential gaps in underrepresented categories. This variation provides a foundation for exploring how lexical diversity influences vocabulary acquisition patterns.
+The study categorizes words into broad lexical groups to analyze patterns of vocabulary acquisition, as depicted in @fig-category. These categories include Activities, Adjectives, Function Words, Living Things, Objects, Places, Sensory Words, and Verbs, with further subdivision of nouns into specific groups like Living Things, Objects, and Places to capture distinct trends. Function Words, encompassing pronouns and question words, reflect early grammatical development, while Verbs and Adjectives denote actions and descriptive expressions, both of which are critical for sentence construction and linguistic progression.
+
+The distribution of word categories, shown in @fig-category, reveals notable differences in frequency. Objects form the largest category, reflecting the prominence of concrete and tangible items in children’s early vocabulary, as these are easier to recognize and recall. Verbs and Living Things follow as essential components of communication but appear less frequently. Conversely, Sensory Words and Activities are underrepresented, likely due to their context-specific and specialized nature. This variability emphasizes the role of concrete and functional words in early language development while also identifying potential gaps in underrepresented lexical groups. 
 
 ```{r}
 #| echo: false
 #| label: fig-category
-#| fig-cap: The figure shows objects dominate the vocabulary, reflecting an emphasis on concrete and tangible terms, while categories like Sensory Words and Activities are less frequently represented, indicating the relative complexity or specificity of these word types in early language acquisition
+#| fig-cap: The figure shows objects dominate the vocabulary, reflecting an emphasis on concrete and tangible terms, while categories like Sensory Words and Activities are less frequently recorded.
 #| warning: false
 #| message: false
 
 ggplot(analysis_data, aes(x = broad_category)) +
   geom_bar(fill = "steelblue", color = "white", alpha = 0.8) +
-  labs(title = "Reclassified Category Distribution", x = "Lexical Category", y = "Count") +
+  labs(title = "Word Category Distribution", x = "Category", y = "Count") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))+
   scale_y_continuous(labels = scales::comma)
@@ -192,17 +191,14 @@ ggplot(analysis_data, aes(x = broad_category)) +
 
 ### Norming Status
 
-The is_norming variable categorizes children into two groups: the norming group and the non-norming group. The norming group serves as a standardized sample, providing a benchmark for assessing vocabulary development and enabling reliable comparisons across the dataset. This group is essential for ensuring the validity of the analysis by offering a consistent reference point for evaluating individual and group-level differences in vocabulary acquisition.
+The is_norming variable classifies children into two groups: norming and non-norming. The norming group serves as a standardized sample, providing benchmarks for assessing vocabulary development and enabling consistent comparisons across the dataset. Although the dataset is predominantly composed of non-norming children, norming data is critical for calibrating and interpreting learning patterns, particularly in early language acquisition studies or eduction.
 
-The dataset is predominantly composed of non-norming children, with only a small proportion belonging to the norming group. This imbalance reflects the inherent challenges of including a sufficiently broad and representative norming sample in large-scale assessments. While the non-norming group captures diverse linguistic and demographic contexts, the norming group remains vital for calibrating and interpreting vocabulary development patterns, particularly in early language acquisition studies. @tbl-norming illustrates this distribution, highlighting the predominance of non-norming children in the dataset.
-
-The is_norming variable is included in the logistic regression model to account for potential systematic differences between the norming and non-norming groups. As the norming group represents a standardized sample used as a benchmark for vocabulary development, its inclusion ensures that variations in the likelihood of achieving a high vocabulary score are not confounded by differences in group composition or assessment protocols. It allows the model to estimate whether membership in the norming group significantly influences vocabulary acquisition outcomes. This is particularly important given the inherent imbalance in the dataset, where the non-norming group constitutes the majority. By controlling for is_norming, the model can differentiate between developmental patterns attributable to broader population diversity versus those arising from the structured selection of the norming sample.
-
+This variable is included in the logistic regression model to account for systematic differences between the groups. By doing so, the model ensures that variations in the likelihood of achieving a high vocabulary score are not confounded by differences in group composition or assessment protocols. Despite the imbalance, this approach allows the model to differentiate patterns arising from population diversity versus those influenced by structured norming samples, as shown in @tbl-norming.
 
 ```{r}
 #| echo: false
 #| label: tbl-norming
-#| tbl-cap: The dataset is primarily composed of non-norming children, with a smaller subset belonging to the norming group, serving as a standardized benchmark for assessing vocabulary development
+#| tbl-cap: Summary of Norming Status in the Dataset
 #| warning: false
 #| message: false
 
@@ -216,18 +212,15 @@ summary_isnorming_df <- as.data.frame(summary_isnorming)
 # Render the summary table using kable
 knitr::kable(
   summary_isnorming_df,
-  col.names = c("Norming Status", "Count"),  
-  caption = "Summary of Norming Status in the Dataset")
+  col.names = c("Norming Status", "Count"))
 ```
 
 
 # Model {#sec-model1}
 
-## Model Selection
+To show the relationship between children’s vocabulary acquisition and their demographic and linguistic characteristics, a logistic regression model is constructed in this section. By examining key demographic and linguistic predictors, we aim to identify how characteristics like age, norming status, and word categories influence vocabulary development. The dependent variable, high_vocabulary, is a binary outcome indicating whether a child’s average production and comprehension score (denoted as prod_comp_mean) exceeds 300. This threshold was chosen to distinguish children with relatively advanced vocabulary levels. More background details and diagnostics are included in [Appendix - @sec-model2].
 
-To investigate the relationship between children’s vocabulary acquisition and their demographic and linguistic characteristics, we constructed a logistic regression model. By examining key demographic and linguistic predictors, we aim to identify how characteristics like age, norming status, and word categories influence vocabulary development. The dependent variable, high_vocabulary, is a binary outcome indicating whether a child’s average production and comprehension score (denoted as prod_comp_mean) exceeds 300. This threshold was chosen to distinguish children with relatively advanced vocabulary levels. More background details and diagnostics are included in [Appendix-@sec-model2].
-
-## Logistic Regression Model Overview
+## Model Overview
 
 - High Vocabulary: A binary indicator where 1 represents a high vocabulary score (combined comprehension and production > 300), and 0 otherwise.
 
@@ -545,39 +538,53 @@ ggplot(analysis_data_test, aes(x = predicted_prob, fill = broad_category)) +
   )
 
 ```
-\newpage
 
 # Discussion {#sec-discussion}
 
-## Age and Developmental Trajectories
+## Age and Developmental Dynamics
 
-Age is unequivocally the strongest predictor of vocabulary acquisition, underscoring the rapid cognitive and linguistic development that occurs between 18 and 30 months. This developmental window represents a critical phase for linguistic foundation building, as evidenced by steep increases in both vocabulary production and comprehension scores. However, the variability among children’s learning trajectories highlights a compelling dimension: not all children progress uniformly. Socio-economic factors, linguistic environments, and cognitive diversity significantly influence these individual paths, warranting further exploration into how specific conditions amplify or hinder vocabulary acquisition.
+The role of age in vocabulary acquisition extends beyond a simple progression of linguistic capabilities—it reflects the interplay of rapid cognitive, social, and linguistic development that unfolds during early childhood. As shown in the results, the period between 18 and 30 months is characterized by an accelerated growth in vocabulary size, with the steepest increases observed in comprehension and production scores. This critical window not only underscores the biological readiness of children to absorb language but also highlights how external factors, such as parental interaction and linguistic exposure, amplify the trajectory of language growth.
 
-Interestingly, the plateau in comprehension growth observed beyond 30 months suggests a transition in linguistic acquisition dynamics. It reflects a possible shift from acquiring foundational vocabulary to mastering more nuanced, context-dependent language elements. This shift implies that while early interventions should focus on fundamental vocabulary, sustained linguistic engagement becomes crucial for later stages of development, particularly in supporting complex lexical categories.
-
-
-## Lexical Categories: Patterns and Variability
-
-The distinct acquisition patterns across lexical categories reveal the interplay between cognitive accessibility and environmental exposure. Categories such as “Function Words” and “Living Things” exhibit high predictability and consistency, indicative of their essential role in early communication. In contrast, categories like “Verbs” and “Sensory Words” remain less consistently acquired, highlighting their reliance on contextual and experiential learning. These categories are often tied to abstract reasoning or specific social interactions, which tend to develop later.
-
-This variability is a double-edged sword. While it underscores the adaptability of language acquisition processes to diverse environments, it also points to systemic gaps in early linguistic exposure. For instance, the underrepresentation of “Sensory Words” in routine interactions may delay their acquisition, underscoring the need for targeted strategies to integrate such categories into everyday linguistic exchanges.
+Interestingly, the variability in acquisition patterns suggests that age alone does not act uniformly across all children. For instance, the widening gap in vocabulary sizes at older ages indicates that while some children reach advanced levels of vocabulary acquisition, others lag behind. This divergence raises questions about the influence of environmental and contextual factors—such as the quality and quantity of language input, socio-economic conditions, or bilingualism—that shape individual trajectories. Moreover, the plateau observed in vocabulary comprehension beyond 30 months suggests a potential shift in focus from foundational vocabulary to more nuanced, context-dependent language learning. These findings highlight the need for age-specific interventions that cater to both foundational vocabulary during early months and more complex linguistic skills as children grow older.
 
 
-## Broader Implications for Language Development
+## Word Categories: Patterns and Variability
 
-The findings from this study have far-reaching implications for language development frameworks. First, they highlight the importance of designing tailored interventions that align with the linguistic needs of children at varying stages of development. For instance, younger children with slower vocabulary growth could benefit from high-frequency exposure to basic categories like “Objects” and “Function Words”. Conversely, older children might require more nuanced approaches that incorporate storytelling, play-based learning, and experiential activities to enhance their grasp of complex categories such as “Verbs” and “Sensory Words”. It also suggests a way on how to develop some educational activities during the early childhood.
+The analysis of word categories reveals distinct patterns in vocabulary acquisition, highlighting differences in cognitive accessibility and linguistic exposure. Foundational categories such as Function Words, Living Things, and Objects show consistently higher predicted probabilities, emphasizing their central role in early communication. These categories, linked to tangible items and routine interactions, form the basis for early linguistic development and are acquired more universally across children.
 
-Furthermore, the results challenge the conventional focus of early childhood programs. They suggest a paradigm shift: instead of prioritizing sheer vocabulary size, programs should aim for a balanced acquisition across diverse lexical categories. Such an approach could bridge developmental gaps and promote linguistic versatility.
+On the other hand, categories like Sensory Words and Adjectives display greater variability in predicted probabilities, reflecting their reliance on contextual understanding and experiential learning. Sensory words often require abstract reasoning or sensory experiences that develop later, while adjectives demand an ability to describe and compare attributes, which may not emerge until later stages. These patterns suggest opportunities to support the acquisition of less frequently encountered categories by incorporating them into everyday activities, such as interactive storytelling or guided play.
+
+Verbs, occupying a middle ground, show moderate variability due to their dependence on both cognitive development and frequent reinforcement through daily interactions. These words often appear in action-oriented communication, such as instructions or play, making them integral but slightly more challenging to master. Addressing these category-specific challenges can help promote more balanced vocabulary development and support children in acquiring both foundational and complex word types.
+
+## Implications for Early Childhood Education
+
+The findings of this study offer valuable contributions to early childhood education by emphasizing the importance of targeted strategies in fostering balanced vocabulary development. Early vocabulary acquisition, as demonstrated, is not uniform across lexical categories. Foundational categories such as Function Words and Objects are consistently acquired and should be reinforced through structured linguistic activities, while categories like Sensory Words and Adjectives require more deliberate and context-specific teaching strategies due to their variability and reliance on experiential learning.
+
+Educators and caregivers can use these insights to design age-appropriate learning environments that bridge gaps in underdeveloped word categories. For instance, integrating sensory-rich experiences, such as interactive play or descriptive storytelling, can provide children with exposure to Sensory Words and Adjectives, enhancing their cognitive and linguistic skills. Similarly, action-based activities that encourage the use of Verbs can be incorporated into daily routines, allowing children to connect language with physical movement and actions.
+
+Additionally, the study highlights the critical role of age-specific interventions. For children aged 16–24 months, the focus should be on expanding foundational vocabulary to ensure a strong linguistic base. For those aged 25–30 months, introducing more complex and abstract words can help develop higher-order language skills. Structured programs, such as those integrating books, games, and parent-child interaction, can be tailored to these developmental needs.
+
+Lastly, the disparities observed between norming and non-norming groups underscore the importance of equitable access to high-quality linguistic environments. Early childhood education programs should aim to provide diverse linguistic exposure across socio-economic and cultural contexts, ensuring all children have the opportunity to reach their vocabulary potential. By applying these findings, educators and policymakers can better support children’s language development, fostering their cognitive and academic success.
 
 ## Limitations and Future Directions
 
-@song also point out in their study on 264 typically developing Chinese children (145 boys and 119 girls) were included from a longitudinal study of language. While the findings offer valuable directions, several limitations should be acknowledged. First, the reliance on parental reports introduces potential biases, including over- or underestimation of children’s abilities. Future studies could complement CDI data with observational or experimental measures to enhance reliability. Second, the cross-sectional nature of the data limits the ability to track individual developmental trajectories. Longitudinal studies are needed to capture within-child variability and the dynamics of vocabulary growth over time.Familial factors and reading or language related cognitive skills were found to be associated with these developmental subgroups.
+@song also point out in their study on 264 typically developing Chinese children (145 boys and 119 girls) were included from a longitudinal study of language. While the findings offer valuable directions, several limitations should be acknowledged. 
+
+This study sheds light on key aspects of vocabulary acquisition, but certain limitations must be acknowledged. First, the reliance on parental reports, as collected through the MacArthur-Bates Communicative Development Inventories (CDI), introduces potential biases. Parents may overestimate or underestimate their child’s abilities due to memory limitations, subjective interpretation, or social desirability. Such biases could affect the accuracy of the data, particularly for categories requiring nuanced understanding, like Sensory Words. To mitigate these limitations, future research should incorporate complementary methods, such as direct observational studies or experimental assessments, to provide more reliable and objective measurements of children’s vocabulary development.
+
+The cross-sectional nature of the dataset also limits the ability to capture individual developmental trajectories over time. While cross-sectional data offers a snapshot of vocabulary acquisition, it cannot account for within-child variability or the dynamic progression of language learning. Longitudinal studies are essential for understanding how vocabulary grows and evolves across different ages and contexts. By tracking the same children over extended periods, researchers could uncover mechanisms driving individual differences in learning rates, identify critical intervention windows, and observe the long-term effects of early linguistic exposure.
+
+Another limitation lies in the dataset’s word category representation. While foundational categories like Function Words and Objects are well-represented, others, such as Sensory Words and Adjectives, are underrepresented, limiting the analysis of these more complex and context-dependent types. Future datasets should strive for a more balanced representation of word categories to explore their unique developmental trajectories. Additionally, integrating contextual factors such as socio-economic status, bilingualism, and parental language practices into future studies could provide a deeper understanding of how these variables influence vocabulary growth. These enhancements would allow for more comprehensive models that account for environmental diversity and linguistic richness.
+
+Addressing these limitations through longitudinal studies, enriched datasets, and mixed-methods approaches can deepen our understanding of early vocabulary development. By incorporating diverse populations, balanced lexical categories, and multi-dimensional data, future research can offer actionable insights to support tailored educational interventions and equitable language development strategies for children from all backgrounds.
+
+
+(Firstly, the reliance on parental reports introduces potential biases, including over- or underestimation of children’s abilities. Future studies could complement CDI data with observational or experimental measures to enhance reliability. Second, the cross-sectional nature of the data limits the ability to track individual developmental trajectories. Longitudinal studies are needed to capture within-child variability and the dynamics of vocabulary growth over time.Familial factors and reading or language related cognitive skills were found to be associated with these developmental subgroups.
 
 Additionally, the dataset we have now is limited on the word categories. Future data collection could focus more on the word types and provides more feasible analysis on the lexcial category learning pattern. Besides, Future research should also explore the influence of environmental and contextual factors, such as language exposure, educational interventions, and socio-economic status, on vocabulary acquisition. These factors could provide a more comprehensive understanding of the mechanisms underlying linguistic development.
 
-The strongest developmental inferences can be made by the examination of longitudinal data, in which children’s individual development is measured multiple times using the same instrument. Unfortunately, relatively little of our CDI data comes from this type of repeated administration. There is a substantial amount of two-administration longitudinal data for several languages, but only a few have more than two observations for individual children.In general, this aspect of our data is a consequence of the fact that, for normative datasets, pure cross-sectional data collection is used to ensure statistical independence between datapoints. Thus, we must typically settle for using the large amount of available cross-sectional data to average out individual variability. 
+The strongest developmental inferences can be made by the examination of longitudinal data, in which children’s individual development is measured multiple times using the same instrument. Unfortunately, relatively little of our CDI data comes from this type of repeated administration. There is a substantial amount of two-administration longitudinal data for several languages, but only a few have more than two observations for individual children.In general, this aspect of our data is a consequence of the fact that, for normative datasets, pure cross-sectional data collection is used to ensure statistical independence between datapoints. Thus, we must typically settle for using the large amount of available cross-sectional data to average out individual variability. )
 
-\newpage
 
 \appendix
 
@@ -619,7 +626,7 @@ This appendix underscores the importance of survey design, sampling methodology,
 #| echo: false
 #| eval: true
 #| label: tbl-modelsummary
-#| tbl-cap: This table provides coefficients summary for the logistic model used in this paper.
+#| tbl-cap: Model Summary
 #| warning: false
 
 modelsummary(logistic_model)
@@ -708,7 +715,7 @@ binnedplot(fitted(logistic_model), residuals(logistic_model, type = "response"),
 
 This project was conducted under the help of OpenAI’s ChatGPT 4.0, which provided invaluable assistance in drafting and refining the paper. The analysis was conducted using a suite of packages from @citeR, which offered robust functionality for data manipulation, visualization, and storage. We extend our gratitude to the teams behind the @tidyverse, @ggplot2, @scales, @dplyr, @tidyr, @arm, @modelsummary and @knitr packages, whose tools were instrumental in streamlining the data cleaning, analysis, and graphing processes. Additionally, @arrow played a critical role in efficient data handling and storage through Parquet files. Thanks to @proc and @prroc for supporting model diagnostics in this study.
 
-A special acknowledgment goes to the @wordbankr team for providing the extensive dataset that forms the foundation of this research. Their contribution enabled a comprehensive exploration of vocabulary learning patterns in children. We are deeply grateful to the developers and maintainers of these open-source tools and datasets for their efforts in advancing research and accessibility in the data science community.
+A special acknowledgment goes to the @wordbankr and @cdi team for providing the extensive dataset that forms the foundation of this research. Their contribution enabled a comprehensive exploration of vocabulary learning patterns in children. We are deeply grateful to the developers and maintainers of these open-source tools and datasets for their efforts in advancing research and accessibility in the data science community.
 
 \newpage
 
