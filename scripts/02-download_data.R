@@ -32,8 +32,7 @@ if (!is.null(items)) {
                                    form = "WS",
                                    items = items$item_id,
                                    administration_info = TRUE,
-                                   item_info = TRUE)
-}
+                                   item_info = TRUE)}
 
 
 #### Save data ####
