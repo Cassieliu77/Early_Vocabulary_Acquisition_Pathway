@@ -1687,4 +1687,17 @@ Yes, the Wordbank dataset will be updated periodically. Updates may include corr
 
 This ongoing updating process ensures the dataset remains a robust and up-to-date resource for the research community.
 
+User
+
+Write an abstract for the datasheet, 3-4 sentences are ok
+
+ChatGPT
+
+The Wordbank dataset is a centralized resource for studying early vocabulary acquisition in children aged 16–30 months. Compiling anonymized data from MacArthur-Bates Communicative Development Inventories (CDIs) across 42 languages, it supports research on linguistic development, cross-linguistic comparisons, and developmental trends. Hosted by Stanford University’s Language and Cognition Lab, the dataset includes both norming and non-norming samples, enabling robust analysis while reflecting linguistic diversity. This datasheet provides detailed documentation of the dataset’s purpose, composition, collection, distribution, and ethical considerations, ensuring its value as a transparent and accessible tool for research and education.
+
+
+
+
+
+
 

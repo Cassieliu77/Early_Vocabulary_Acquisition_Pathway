@@ -2,9 +2,9 @@
 title: "Datasheet for Word Bank"
 subtitle: "A Datasheet Used to Understand Children's Vocabulary Acquisition Pattern"
 author: Yongqi Liu
-thanks: "Code and data are available at: https://github.com/Cassieliu77/Early_Vocabulary_Acquisition_Pathway.git."
+thanks: "Code and data are available at: [Early Vocabulary Acquisition Pathway](https://github.com/Cassieliu77/Early_Vocabulary_Acquisition_Pathway.git)"
 date: today
-abstract: "This datasheet containes the motivation, composition, collection, preprocessing, uses, distribution and maintainence of the dataset from Word Bank and MacArthur-Bates Communicative Development Inventories."
+abstract: "The Wordbank dataset is a centralized resource for studying early vocabulary acquisition in children aged 16–30 months. Compiling anonymized data from MacArthur-Bates Communicative Development Inventories (CDIs) across 42 languages, it supports research on linguistic development, cross-linguistic comparisons, and developmental trends. Hosted by Stanford University’s Language and Cognition Lab, the dataset includes both norming and non-norming samples, enabling robust analysis while reflecting linguistic diversity. This datasheet provides detailed documentation of the dataset’s purpose, composition, collection, distribution, and ethical considerations, ensuring its value as a transparent and accessible tool for research and education."
 format: pdf
 number-sections: true
 bibliography: references.bib
@@ -16,18 +16,18 @@ Extract of the questions from @gebru2021datasheets based on the data from @wordb
 **Motivation**
 
 1. *For what purpose was the dataset created? Was there a specific task in mind? Was there a specific gap that needed to be filled? Please provide a description.*
-    - The Wordbank dataset was created to serve as a platform for archiving, sharing, and exploring anonymized data from the MacArthur-Bates Communicative Development Inventories (CDI). Its primary goal is to help the study of early vocabulary acquisition across multiple languages by providing a centralized resource for both norming studies and contributed data from various research projects. The dataset solves the need for a comprehensive, accessible repository of CDI data, enabling researchers to generate norms for populations and individual vocabulary items interactively. It also fills a critical gap by supporting cross-linguistic comparisons of early lexical development and enhancing accessibility to standardized benchmarks and diverse linguistic samples. Wordbank builds on the foundation of its predecessor, CLEX, by offering improved functionality as both a teaching and research tool. It allows users to explore developmental patterns and generate customized norms for different populations, making it an invaluable resource for linguistic, psychological, and developmental research.
+    - The Wordbank dataset was created to serve as a platform for archiving, sharing, and exploring anonymized data from the MacArthur-Bates Communicative Development Inventories (CDI). Its primary goal is to help the study of early vocabulary acquisition across multiple languages by providing a centralized resource for both norming studies and contributed data from various research projects. It solves the need for a comprehensive, accessible repository of CDI data, enabling researchers to generate norms for populations and individual vocabulary items interactively. It also fills a critical gap by supporting cross-linguistic comparisons of early lexical development and enhancing accessibility to standardized benchmarks and diverse linguistic samples. Wordbank builds on the foundation of its predecessor, CLEX, by offering improved functionality as both a teaching and research tool. It allows users to explore developmental patterns and generate customized norms for different populations, making it an invaluable resource for linguistic, psychological, and developmental research.
 2. *Who created the dataset (for example, which team, research group) and on behalf of which entity (for example, company, institution, organization)?*
     - The Wordbank dataset was developed by the Language and Cognition Lab at Stanford University, under the direction of Dr. Michael C. Frank. This initiative is part of Stanford’s broader commitment to advancing research in child language acquisition and cognitive development. The platform compiles data from the MacArthur-Bates Communicative Development Inventories (CDIs) across multiple languages, serving as a valuable resource for researchers worldwide.
 3. *Who funded the creation of the dataset? If there is an associated grant, please provide the name of the grantor and the grant name and number.*
-    - The development of Wordbank was funded by a grant from the National Science Foundation (# 1451577) as well as generous support from the MB-CDI Advisory Board.
+    - The development of Wordbank was funded by a grant from the National Science Foundatio as well as generous support from the MB-CDI Advisory Board.
 4. *Any other comments?*
-    -The dataset is significant for its contribution to linguistic development research. It emphasizes critical windows of vocabulary growth and includes both norming and non-norming samples, offering standardized benchmarks while reflecting diverse linguistic environments. Its cross-linguistic scope makes it a valuable tool for understanding global patterns in early lexical development.
+    - The dataset is significant for its contribution to children's cognitive development research. It emphasizes critical windows of vocabulary growth and includes both norming and non-norming samples, offering standardized benchmarks while reflecting diverse linguistic environments. Its cross-linguistic and cross-item scope makes it a valuable tool for understanding global patterns in early vocabulary acquisition. 
     
 **Composition**
 
 1. *What do the instances that comprise the dataset represent (for example, documents, photos, people, countries)? Are there multiple types of instances (for example, movies, users, and ratings; people and interactions between them; nodes and edges)? Please provide a description.*
-	- The instances in the dataset represent children aged 16–30 months and their responses from the MacArthur-Bates Communicative Development Inventories (CDIs). Each instance includes data on the child’s vocabulary comprehension and production, focusing on early language acquisition. The dataset consists of multiple types of information for each child, such as:
+	- The instances in the dataset represent children aged 16–30 months and their responses from the MacArthur-Bates Communicative Development Inventories (CDIs). Each instance includes data on the child’s vocabulary comprehension and production, focusing on early language acquisition. The dataset consists of multiple types of information for each child, such as:----------看到这里了。。
 	a.	Vocabulary Comprehension: Words the child understands.
 	b.	Vocabulary Production: Words the child can produce.
 	c.	Lexical Categories: Words grouped by semantic or grammatical categories (e.g., Function Words, Living Things, Adjectives).
@@ -133,7 +133,7 @@ The form also provided contact details for the research team in case participant
 	
 	-	Data Transformation: Standardization of age and vocabulary scores may obscure fine-grained variations, which could be relevant for specific applications.
 5. *Are there tasks for which the dataset should not be used? If so, please provide a description.*
-	- TBD
+	- No
 6. *Any other comments?*
 	- The dataset offers a rich resource for studying early language development but requires careful consideration of its limitations. Researchers are encouraged to combine it with other data sources and methodologies to enhance robustness and applicability. Transparency in reporting and responsible use are critical to maximizing the dataset’s value while minimizing potential harm.
 
@@ -144,7 +144,7 @@ The form also provided contact details for the research team in case participant
 2. *How will the dataset be distributed (for example, tarball on website, API, GitHub)? Does the dataset have a digital object identifier (DOI)?*
 	- The dataset is distributed via the Wordbank website (wordbank.stanford.edu) and can be accessed using tools like the WordbankR R package, which provides programmatic access to the data. Users can explore and download data directly from the platform.
 3. *When will the dataset be distributed?*
-	- TBD
+	- The dataset is currently available for distribution through the Wordbank platform. Researchers, educators, and other users can access the data via the Wordbank website (wordbank.stanford.edu) and tools like the WordbankR package for programmatic access. There is no future distribution delay, as the dataset is actively maintained and regularly updated to include new CDI data.
 4. *Will the dataset be distributed under a copyright or other intellectual property (IP) license, and/or under applicable terms of use (ToU)? If so, please describe this license and/ or ToU, and provide a link or other access point to, or otherwise reproduce, any relevant licensing terms or ToU, as well as any fees associated with these restrictions.*
 	- Yes, the dataset is distributed under applicable terms of use that ensure ethical usage and compliance with data privacy standards. Licensing details and terms of use can be found on the Wordbank platform. There are no fees for accessing the data.
 5. *Have any third parties imposed IP-based or other restrictions on the data associated with the instances? If so, please describe these restrictions, and provide a link or other access point to, or otherwise reproduce, any relevant licensing terms, as well as any fees associated with these restrictions.*

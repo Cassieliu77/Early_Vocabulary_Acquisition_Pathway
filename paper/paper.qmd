@@ -2,7 +2,7 @@
 title: "Pathways to Early Vocabulary Acquisition"
 subtitle: "Mapping English Language Development Trajectories in Children Aged 16–30 Months"
 author: Yongqi Liu
-thanks: "Code and data are available at: https://github.com/Cassieliu77/Early_Vocabulary_Acquisition_Pathway.git"
+thanks: "Code and data are available at: [Early Vocabulary Acquisition Pathway](https://github.com/Cassieliu77/Early_Vocabulary_Acquisition_Pathway.git)"
 date: today
 date-format: long
 abstract: "This study examines vocabulary acquisition in children aged 16–30 months using data from the MacArthur-Bates Communicative Development Inventories. Age is the strongest predictor, with vocabulary size increasing consistently and foundational categories like Function Words, Living Things, and Objects showing higher predicted probabilities, indicating their universal acquisition. Complex categories such as Sensory Words, Adjectives, and Places exhibit broader distributions and lower probabilities, reflecting their reliance on contextual understanding and cognitive complexity. These findings underscore age-specific patterns in vocabulary growth and the need for targeted interventions to support diverse word categories learning."
