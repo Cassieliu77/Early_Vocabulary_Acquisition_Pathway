@@ -24,4 +24,4 @@ The repo is structured as:
 
 ## Statement on LLM usage
 
-Some aspects of the code and paper were written with the help of the ChatGPT 4o. The entire chat history is available in other/llm_usage/usage.txt.
+Some aspects of the code and the paper were written with the help of the OpenAI ChatGPT 4o. The entire chat history is available in other/llm_usage/usage.txt.
