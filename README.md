@@ -8,7 +8,7 @@ This repository contains a study on how children acquire vocabulary during criti
 - Developmental Focus: Explores vocabulary acquisition during the early childhood period, emphasizing critical milestones.
 - Word Categories: Analyzes variations in comprehension and production across different word categories, such as Function Words, Sensory Words, and Adjectives.
 - Predictive Modeling: Uses logistic regression to identify the influence of factors like age on achieving a vocabulary level during the given months.
-- Data Source: Utilizes high-quality data from the Wordbank database: https://wordbank.stanford.edu/data and the MacArthur-Bates Communicative Development Inventories (MB-CDIs): https://mb-cdi.stanford.edu.
+- Data Source: Utilizes high-quality data from the [Wordbank](https://wordbank.stanford.edu/data) and the [MacArthur-Bates Communicative Development Inventories](https://mb-cdi.stanford.edu)
 
 
 ## File Structure
