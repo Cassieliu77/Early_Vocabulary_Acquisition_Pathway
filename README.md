@@ -20,8 +20,8 @@ The repo is structured as:
 -   `model` contains fitted models. 
 -   `other` contains relevant literature, datasheet, details about LLM chat interactions, and sketches.
 -   `paper` contains the files used to generate the paper, including the Quarto document and reference bibliography file, as well as the PDF of the paper. 
--   `scripts` contains the R scripts used to simulate, download and clean data.
+-   `scripts` contains the R scripts used to simulate, download, and clean data.
 
 ## Statement on LLM usage
 
-Some aspects of the code and the paper were written under the help of the OpenAI ChatGPT 4o. The entire chat history is available in other/llm_usage/usage.txt.
+Some aspects of the code and the paper were written with the help of the OpenAI ChatGPT 4o. The entire chat history is available in other/llm_usage/usage.txt.
