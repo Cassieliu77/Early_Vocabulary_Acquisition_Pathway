@@ -5,7 +5,7 @@ author: Yongqi Liu
 thanks: "Code and data are available at: [Early Vocabulary Acquisition Pathway](https://github.com/Cassieliu77/Early_Vocabulary_Acquisition_Pathway.git)"
 date: today
 date-format: long
-abstract: "This study examines vocabulary acquisition in children aged 16–30 months using data from the Word Bank and MacArthur-Bates Communicative Development Inventories. Age is the strongest predictor, with vocabulary size increasing consistently and foundational categories like Function Words, Living Things, and Objects showing higher predicted probabilities, indicating their universal acquisition. Complex categories such as Sensory Words, Adjectives, and Places exhibit broader distributions and lower probabilities, reflecting their reliance on contextual understanding and cognitive complexity. These findings underscore age-specific patterns in vocabulary growth and the need for targeted interventions to support diverse word categories learning."
+abstract: "This study examines vocabulary acquisition in children aged 16–30 months using data from the Wordbank and MacArthur-Bates Communicative Development Inventories. Age is the strongest predictor, with vocabulary size increasing consistently and foundational categories like Function Words, Living Things, and Objects showing higher predicted probabilities, indicating their universal acquisition. Complex categories such as Sensory Words, Adjectives, and Places exhibit broader distributions and lower probabilities, reflecting their reliance on contextual understanding and cognitive complexity. These findings underscore age-specific patterns in vocabulary growth and the need for targeted interventions to support diverse word categories learning."
 format: pdf
 toc: true
 number-sections: true
@@ -43,7 +43,7 @@ Language development in infants and toddlers is often discussed in terms of isol
 
 Understanding how children acquire vocabulary is a cornerstone to developing linguistics and early childhood education. Vocabulary growth is not only a key indicator of cognitive development but also serves as a foundation for future linguistic and academic success. The interplay of factors such as age, linguistic environments, and lexical categories influences children’s vocabulary acquisition in complex and dynamic ways. By analyzing patterns and predictors of vocabulary growth, this paper describes the developmental trajectories that underpin language acquisition, offering a clearer understanding of how children progress in their linguistic abilities and how we can predict children's later reading skills such as recognizing characters and reading fluently.
 
-This study utilizes the Word Bank R package from @wordbankr, which archives data from @cdi, to investigate vocabulary development in early childhood. By employing a logistic regression model, the research also estimates the likelihood of achieving a high vocabulary score using predictors such as age, norming status, and lexical categories. This model serves as a tool to explore how these factors collectively influence children’s vocabulary acquisition trajectories.
+This study utilizes the Wordbank R package from @wordbankr, which archives data from @cdi, to investigate vocabulary development in early childhood. By employing a logistic regression model, the research also estimates the likelihood of achieving a high vocabulary score using predictors such as age, norming status, and lexical categories. This model serves as a tool to explore how these factors collectively influence children’s vocabulary acquisition trajectories.
 
 The estimand of interest in this study is the probability that an English-speaking child achieves a high vocabulary score, defined by surpassing a threshold of 300 combined comprehension and production words. These predictors include the child’s age (measured in months), their inclusion in a norming group (standardized benchmark), and the lexical category of the words they acquire (e.g., Function Words, Adjectives, Verbs). The study aims to quantify the influence of these factors on vocabulary proficiency and identify how age and lexical categories uniquely shape developmental trajectories. The model further investigates variability in vocabulary acquisition across categories, highlighting disparities between foundational categories, such as Function Words, which are more consistently acquired, and complex categories like Sensory Words, which show broader variability due to contextual and cognitive demands.
 
@@ -59,7 +59,7 @@ The original dataset was obtained from @cdi and downloaded using the R package @
 
 ```{r}
 #| label: tbl-data
-#| tbl-cap: Cleaned Word Bank Dataset
+#| tbl-cap: Cleaned Wordbank Dataset
 #| echo: false
 
 summary_table <- analysis_data %>%
